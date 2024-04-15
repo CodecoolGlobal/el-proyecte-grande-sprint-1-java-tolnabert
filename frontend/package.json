@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "react-router-dom": "^6.22.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
