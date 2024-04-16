@@ -2,7 +2,6 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
-import com.codecool.chilibeans.model.User;
 import com.codecool.chilibeans.service.ChiliServiceInterface;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +39,6 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public boolean deleteUser(@PathVariable("id") UUID uuid){
-        return service.DeleteUserById(uuid);
+        return service.deleteUserById(uuid);
     }
 }

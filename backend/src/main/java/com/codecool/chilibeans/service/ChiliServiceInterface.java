@@ -4,7 +4,6 @@ import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
-import com.codecool.chilibeans.model.User;
 
 import java.util.Set;
 import java.util.UUID;
@@ -19,7 +18,7 @@ public interface ChiliServiceInterface {
 
     UserDTO updateUser(UUID id, UserDTO userDTO);
 
-    boolean DeleteUserById(UUID id);
+    boolean deleteUserById(UUID id);
 
 
     Set<RecipeDTO> getAllRecipes();
