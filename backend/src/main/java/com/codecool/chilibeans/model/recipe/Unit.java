@@ -2,11 +2,11 @@ package com.codecool.chilibeans.model.recipe;
 
 public enum Unit {
     ML,
-    L,
     DL,
-    KG,
-    DKG,
+    L,
     G,
+    DKG,
+    KG,
     PC,
     TEASPOON,
     TABLESPOON;
