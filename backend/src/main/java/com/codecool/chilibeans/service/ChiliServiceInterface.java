@@ -28,7 +28,7 @@ public interface ChiliServiceInterface {
 
     RecipeDTO createNewRecipe(NewRecipeDTO newRecipeDTO);
 
-    UserDTO updateRecipe(UUID id, RecipeDTO recipeDTO);
+    RecipeDTO updateRecipe(UUID id, RecipeDTO recipeDTO);
 
-    boolean DeleteRecipeById(UUID id);
+    boolean deleteRecipeById(UUID id);
 }
