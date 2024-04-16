@@ -1,4 +1,4 @@
 package com.codecool.chilibeans.model.recipe;
 
-public record Diets(String name) {
+public record Diet(String name) {
 }
