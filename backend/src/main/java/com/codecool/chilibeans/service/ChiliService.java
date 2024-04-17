@@ -27,9 +27,9 @@ public class ChiliService implements ChiliServiceInterface {
     private final Set<Recipe> recipes = new HashSet<>();
     private final Set<Diet> diets = new HashSet<>();
     private final Set<Unit> units = new HashSet<>();
-  
+
     // User service
-  
+
     @Override
     public Set<UserDTO> getAllUsers() {
         Set<UserDTO> userDTOs = new HashSet<>();
@@ -169,41 +169,41 @@ public class ChiliService implements ChiliServiceInterface {
     public boolean deleteDietById(UUID id) {
         return diets.removeIf(diet -> diet.id().equals(id));
     }
+
+
+// Unit Service
+
+@Override
+public Set<UnitDTO> getAllUnits() {
+    return units.stream().map(unit -> new UnitDTO(unit.unitId(), unit.unitName())).collect(Collectors.toSet());
 }
-    
-    // Unit Service
 
-    @Override
-    public Set<UnitDTO> getAllUnits() {
-        return units.stream().map(unit -> new UnitDTO(unit.unitId(), unit.unitName())).collect(Collectors.toSet());
-    }
+@Override
+public UnitDTO createNewUnit(NewUnitDTO newUnitDTO) {
+    Unit newUnit = new Unit(0, UUID.randomUUID(), newUnitDTO.unitName());
+    units.add(newUnit);
+    return new UnitDTO(newUnit.unitId(), newUnit.unitName());
+}
 
-    @Override
-    public UnitDTO createNewUnit(NewUnitDTO newUnitDTO) {
-        Unit newUnit = new Unit(0, UUID.randomUUID(), newUnitDTO.unitName());
-        units.add(newUnit);
-        return new UnitDTO(newUnit.unitId(), newUnit.unitName());
-    }
+@Override
+public UnitDTO getUnitById(UUID uuid) {
+    Unit unit = units.stream().filter(unit1 -> unit1.unitId().equals(uuid)).findFirst().orElse(null);
+    return new UnitDTO(unit.unitId(), unit.unitName());
+}
 
-    @Override
-    public UnitDTO getUnitById(UUID uuid) {
-        Unit unit = units.stream().filter(unit1 -> unit1.unitId().equals(uuid)).findFirst().orElse(null);
-        return new UnitDTO(unit.unitId(), unit.unitName());
-    }
+@Override
+public UnitDTO deleteUnitById(UUID uuid) {
+    Unit unitToRemove = units.stream().filter(unit -> unit.unitId().equals(uuid)).findFirst().orElse(null);
+    units.remove(unitToRemove);
+    return new UnitDTO(unitToRemove.unitId(), unitToRemove.unitName());
+}
 
-    @Override
-    public UnitDTO deleteUnitById(UUID uuid) {
-        Unit unitToRemove = units.stream().filter(unit -> unit.unitId().equals(uuid)).findFirst().orElse(null);
-        units.remove(unitToRemove);
-        return new UnitDTO(unitToRemove.unitId(), unitToRemove.unitName());
-    }
-
-    @Override
-    public UnitDTO updateUnitById(UUID uuid, UnitDTO unitDTO) {
-        Unit unitToUpdate = units.stream().filter(unit -> unit.unitId().equals(uuid)).findFirst().orElse(null);
-        units.remove(unitToUpdate);
-        Unit updatedUnit = new Unit(unitToUpdate.databaseId(), unitToUpdate.unitId(), unitDTO.unitName());
-        units.add(updatedUnit);
-        return new UnitDTO(updatedUnit.unitId(), updatedUnit.unitName());
-    }
+@Override
+public UnitDTO updateUnitById(UUID uuid, UnitDTO unitDTO) {
+    Unit unitToUpdate = units.stream().filter(unit -> unit.unitId().equals(uuid)).findFirst().orElse(null);
+    units.remove(unitToUpdate);
+    Unit updatedUnit = new Unit(unitToUpdate.databaseId(), unitToUpdate.unitId(), unitDTO.unitName());
+    units.add(updatedUnit);
+    return new UnitDTO(updatedUnit.unitId(), updatedUnit.unitName());
+}
 }

@@ -3,6 +3,7 @@ package com.codecool.chilibeans.controller;
 import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
 import com.codecool.chilibeans.service.ChiliService;
+import com.codecool.chilibeans.service.ChiliServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,10 @@ import java.util.UUID;
 @RequestMapping("/diets")
 public class DietController {
 
-    private final ChiliService chiliService;
+    private final ChiliServiceInterface chiliService;
 
     @Autowired
-    public DietController(ChiliService chiliService) {
+    public DietController(ChiliServiceInterface chiliService) {
         this.chiliService = chiliService;
     }
 
