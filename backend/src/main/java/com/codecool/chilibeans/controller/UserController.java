@@ -18,7 +18,7 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public Set<UserDTO> getAllUsers() {
         return service.getAllUsers();
     }
@@ -28,7 +28,7 @@ public class UserController {
         return service.getUserById(uuid);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public UserDTO createNewUser(@RequestBody NewUserDTO newUserDTO) {
         return service.createNewUser(newUserDTO);
     }
