@@ -23,8 +23,8 @@ public class RecipeController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Set<RecipeDTO>> getAllRecipes(){
-        return ResponseEntity.ok().body(chiliService.getAllRecipes());
+    public Set<RecipeDTO> getAllRecipes(){
+        return chiliService.getAllRecipes();
     }
 
     @GetMapping("/{id}")
