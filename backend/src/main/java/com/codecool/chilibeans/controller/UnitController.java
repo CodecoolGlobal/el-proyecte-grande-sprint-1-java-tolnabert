@@ -18,7 +18,7 @@ public class UnitController {
         this.chiliService = chiliService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public Set<UnitDTO> getAllUnits() {
         return chiliService.getAllUnits();
     }
@@ -28,7 +28,7 @@ public class UnitController {
         return chiliService.getUnitById(uuid);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public UnitDTO createUnit(@RequestBody NewUnitDTO newUnitDTO) {
         return chiliService.createNewUnit(newUnitDTO);
     }

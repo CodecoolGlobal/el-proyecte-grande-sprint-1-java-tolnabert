@@ -2,10 +2,8 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
-import com.codecool.chilibeans.service.ChiliService;
 import com.codecool.chilibeans.service.ChiliServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -15,14 +13,14 @@ import java.util.UUID;
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private ChiliServiceInterface chiliService;
+    private final ChiliServiceInterface chiliService;
 
     @Autowired
     public RecipeController(ChiliServiceInterface chiliService) {
         this.chiliService = chiliService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public Set<RecipeDTO> getAllRecipes() {
         return chiliService.getAllRecipes();
     }
@@ -32,7 +30,7 @@ public class RecipeController {
         return chiliService.getRecipeById(id);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public RecipeDTO createNewRecipe(@RequestBody NewRecipeDTO newRecipeDTO) {
         return chiliService.createNewRecipe(newRecipeDTO);
     }
