@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("/api/recipes")
 public class RecipeController {
 
     private ChiliServiceInterface chiliService;
@@ -22,28 +22,28 @@ public class RecipeController {
         this.chiliService = chiliService;
     }
 
-    @GetMapping("")
-    public Set<RecipeDTO> getAllRecipes(){
+    @GetMapping("/")
+    public Set<RecipeDTO> getAllRecipes() {
         return chiliService.getAllRecipes();
     }
 
     @GetMapping("/{id}")
-    public RecipeDTO getRecipeById(@PathVariable UUID id){
+    public RecipeDTO getRecipeById(@PathVariable UUID id) {
         return chiliService.getRecipeById(id);
     }
 
-    @PostMapping("")
-    public RecipeDTO createNewRecipe(@RequestBody NewRecipeDTO newRecipeDTO){
+    @PostMapping("/")
+    public RecipeDTO createNewRecipe(@RequestBody NewRecipeDTO newRecipeDTO) {
         return chiliService.createNewRecipe(newRecipeDTO);
     }
 
     @PatchMapping("/{id}")
-    public RecipeDTO updateRecipe (@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO){
+    public RecipeDTO updateRecipe(@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO) {
         return chiliService.updateRecipe(id, recipeDTO);
     }
 
-    @DeleteMapping("{id}")
-    public boolean deleteRecipe(@PathVariable UUID id){
+    @DeleteMapping("/{id}")
+    public boolean deleteRecipe(@PathVariable UUID id) {
         return chiliService.deleteRecipeById(id);
     }
 

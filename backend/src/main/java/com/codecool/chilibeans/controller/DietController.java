@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/diets")
+@RequestMapping("/api/diets")
 public class DietController {
 
     private final ChiliServiceInterface chiliService;
@@ -22,7 +22,7 @@ public class DietController {
         this.chiliService = chiliService;
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public Set<DietDTO> getDiets() {
         return chiliService.getAllDiets();
     }
@@ -32,7 +32,7 @@ public class DietController {
         return chiliService.getDietById(id);
     }
 
-    @PostMapping("")
+    @PostMapping("/")
     public DietDTO createDiet(@RequestBody NewDietDTO newDietDTO) {
         return chiliService.createNewDiet(newDietDTO);
     }

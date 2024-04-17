@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("units")
+@RequestMapping("/api/units")
 public class UnitController {
 
     ChiliServiceInterface chiliService;
@@ -18,9 +18,9 @@ public class UnitController {
         this.chiliService = chiliService;
     }
 
-    @GetMapping("")
-    public Set<UnitDTO> getAllUnits(){
-       return chiliService.getAllUnits();
+    @GetMapping("/")
+    public Set<UnitDTO> getAllUnits() {
+        return chiliService.getAllUnits();
     }
 
     @GetMapping("/{id}")
@@ -28,8 +28,8 @@ public class UnitController {
         return chiliService.getUnitById(uuid);
     }
 
-    @PostMapping("")
-    public UnitDTO createUnit(@RequestBody NewUnitDTO newUnitDTO){
+    @PostMapping("/")
+    public UnitDTO createUnit(@RequestBody NewUnitDTO newUnitDTO) {
         return chiliService.createNewUnit(newUnitDTO);
     }
 
