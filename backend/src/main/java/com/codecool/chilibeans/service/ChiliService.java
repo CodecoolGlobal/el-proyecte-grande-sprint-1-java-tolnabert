@@ -1,10 +1,13 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
+import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
 import com.codecool.chilibeans.model.User;
+import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.model.recipe.Recipe;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,15 @@ public class ChiliService implements ChiliServiceInterface {
 
     private final Set<User> users = new HashSet<>();
     private final Set<Recipe> recipes = new HashSet<>();
+    private final Set<Diet> diets = new HashSet<>();
+
+    // User service
 
     @Override
     public Set<UserDTO> getAllUsers() {
         Set<UserDTO> userDTOs = new HashSet<>();
         for (User user : users) {
-            userDTOs.add(new UserDTO(user.id(), user.username(), user.password(), user.firstName(), user.lastName(), user.dateOfBirth(),
+            userDTOs.add(new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                     user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate()));
         }
         return userDTOs;
@@ -33,7 +39,7 @@ public class ChiliService implements ChiliServiceInterface {
         User user = users.stream().filter(user1 -> user1.id().equals(id))
                 .findFirst()
                 .orElse(null);
-        return new UserDTO(user.id(), user.username(), user.password(), user.firstName(), user.lastName(), user.dateOfBirth(),
+        return new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                 user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate());
     }
 
@@ -43,7 +49,7 @@ public class ChiliService implements ChiliServiceInterface {
                 newUserDTO.lastName(), newUserDTO.dateOfBirth(), newUserDTO.email(), newUserDTO.ownRecipes(), newUserDTO.favoredRecipes(),
                 null);
         users.add(newUser);
-        return new UserDTO(newUser.id(), newUser.username(), newUser.password(), newUser.firstName(), newUser.lastName(),
+        return new UserDTO(newUser.id(), newUser.username(), newUser.firstName(), newUser.lastName(),
                 newUser.dateOfBirth(), newUser.email(), newUser.ownRecipes(), newUser.favoredRecipes(), null);
     }
 
@@ -60,11 +66,13 @@ public class ChiliService implements ChiliServiceInterface {
         return userDTO;
     }
 
-
     @Override
-    public boolean DeleteUserById(UUID id) {
+    public boolean deleteUserById(UUID id) {
         return users.removeIf(user -> user.id().equals(id));
     }
+
+
+    // Recipe service
 
     @Override
     public Set<RecipeDTO> getAllRecipes() {
@@ -105,11 +113,56 @@ public class ChiliService implements ChiliServiceInterface {
     }
 
     @Override
-    public boolean DeleteRecipeById(UUID id) {
+    public boolean deleteRecipeById(UUID id) {
         Recipe recipeToDelete = recipes.stream()
                 .filter(recipe -> recipe.id().equals(id))
                 .findFirst()
                 .orElse(null);
         return recipes.remove(recipeToDelete);
+    }
+
+    // Diet service
+
+
+    @Override
+    public Set<DietDTO> getAllDiets() {
+        Set<DietDTO> dietDTOs = new HashSet<>();
+        for (Diet diet : diets){
+            dietDTOs.add(new DietDTO(diet.id(), diet.name()));
+        }
+        return dietDTOs;
+    }
+
+    @Override
+    public DietDTO getDietById(UUID id) {
+        Diet diet = diets.stream()
+                .filter(diet1 -> diet1.id().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        return new DietDTO(diet.id(), diet.name());
+    }
+
+    @Override
+    public DietDTO createNewDiet(NewDietDTO newDietDTO) {
+        Diet newDiet = new Diet(0, UUID.randomUUID(), newDietDTO.name());
+        diets.add(newDiet);
+        return new DietDTO(newDiet.id(), newDiet.name());
+    }
+
+    @Override
+    public DietDTO updateDiet(UUID id, DietDTO dietDTO) {
+        Diet dietToUpdate = diets.stream().filter(diet -> diet.id().equals(id))
+                .findFirst().orElse(null);
+        Diet updatedDiet = new Diet(0, dietToUpdate.id(), dietDTO.name());
+        diets.add(updatedDiet);
+        diets.remove(dietToUpdate);
+
+        return dietDTO;
+    }
+
+    @Override
+    public boolean deleteDietById(UUID id) {
+        return diets.removeIf(diet -> diet.id().equals(id));
     }
 }

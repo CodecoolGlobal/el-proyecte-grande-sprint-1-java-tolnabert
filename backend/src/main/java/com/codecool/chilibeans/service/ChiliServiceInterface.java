@@ -1,14 +1,19 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
+import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
+import com.codecool.chilibeans.model.recipe.Diet;
 
 import java.util.Set;
 import java.util.UUID;
 
 public interface ChiliServiceInterface {
+
+    // Users
 
     Set<UserDTO> getAllUsers();
 
@@ -20,6 +25,7 @@ public interface ChiliServiceInterface {
 
     boolean deleteUserById(UUID id);
 
+    // Recipes
 
     Set<RecipeDTO> getAllRecipes();
 
@@ -30,4 +36,16 @@ public interface ChiliServiceInterface {
     RecipeDTO updateRecipe(UUID id, RecipeDTO recipeDTO);
 
     boolean deleteRecipeById(UUID id);
+
+    // Diet
+
+    Set<DietDTO> getAllDiets();
+
+    DietDTO getDietById(UUID id);
+
+    DietDTO createNewDiet(NewDietDTO newDietDTO);
+
+    DietDTO updateDiet(UUID id, DietDTO dietDTO);
+
+    boolean deleteDietById(UUID id);
 }
