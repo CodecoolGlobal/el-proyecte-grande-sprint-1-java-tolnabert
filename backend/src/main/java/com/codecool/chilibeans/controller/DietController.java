@@ -22,8 +22,8 @@ public class DietController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Set<DietDTO>> getDiets() {
-        return ResponseEntity.ok().body(chiliService.getAllDiets());
+    public Set<DietDTO> getDiets() {
+        return chiliService.getAllDiets();
     }
 
     @GetMapping("/{id}")
