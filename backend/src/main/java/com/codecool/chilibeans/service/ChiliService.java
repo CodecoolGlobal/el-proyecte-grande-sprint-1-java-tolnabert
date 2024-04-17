@@ -1,5 +1,7 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
+import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.controller.dto.unit.NewUnitDTO;
@@ -7,6 +9,7 @@ import com.codecool.chilibeans.controller.dto.unit.UnitDTO;
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
 import com.codecool.chilibeans.model.User;
+import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.model.recipe.Recipe;
 import com.codecool.chilibeans.model.recipe.Unit;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,11 @@ public class ChiliService implements ChiliServiceInterface {
 
     private final Set<User> users = new HashSet<>();
     private final Set<Recipe> recipes = new HashSet<>();
+    private final Set<Diet> diets = new HashSet<>();
     private final Set<Unit> units = new HashSet<>();
-
+  
+    // User service
+  
     @Override
     public Set<UserDTO> getAllUsers() {
         Set<UserDTO> userDTOs = new HashSet<>();
@@ -66,11 +72,13 @@ public class ChiliService implements ChiliServiceInterface {
         return userDTO;
     }
 
-
     @Override
     public boolean deleteUserById(UUID id) {
         return users.removeIf(user -> user.id().equals(id));
     }
+
+
+    // Recipe service
 
     @Override
     public Set<RecipeDTO> getAllRecipes() {
@@ -116,6 +124,54 @@ public class ChiliService implements ChiliServiceInterface {
                 .orElse(null);
         return recipes.remove(recipeToDelete);
     }
+
+    // Diet service
+
+
+    @Override
+    public Set<DietDTO> getAllDiets() {
+        Set<DietDTO> dietDTOs = new HashSet<>();
+        for (Diet diet : diets){
+            dietDTOs.add(new DietDTO(diet.id(), diet.name()));
+        }
+        return dietDTOs;
+    }
+
+    @Override
+    public DietDTO getDietById(UUID id) {
+        Diet diet = diets.stream()
+                .filter(diet1 -> diet1.id().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        return new DietDTO(diet.id(), diet.name());
+    }
+
+    @Override
+    public DietDTO createNewDiet(NewDietDTO newDietDTO) {
+        Diet newDiet = new Diet(0, UUID.randomUUID(), newDietDTO.name());
+        diets.add(newDiet);
+        return new DietDTO(newDiet.id(), newDiet.name());
+    }
+
+    @Override
+    public DietDTO updateDiet(UUID id, DietDTO dietDTO) {
+        Diet dietToUpdate = diets.stream().filter(diet -> diet.id().equals(id))
+                .findFirst().orElse(null);
+        Diet updatedDiet = new Diet(0, dietToUpdate.id(), dietDTO.name());
+        diets.add(updatedDiet);
+        diets.remove(dietToUpdate);
+
+        return dietDTO;
+    }
+
+    @Override
+    public boolean deleteDietById(UUID id) {
+        return diets.removeIf(diet -> diet.id().equals(id));
+    }
+}
+    
+    // Unit Service
 
     @Override
     public Set<UnitDTO> getAllUnits() {

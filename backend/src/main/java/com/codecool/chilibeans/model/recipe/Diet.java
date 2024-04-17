@@ -1,4 +1,6 @@
 package com.codecool.chilibeans.model.recipe;
 
-public record Diet(String name) {
+import java.util.UUID;
+
+public record Diet(long databaseId, UUID id,String name) {
 }
