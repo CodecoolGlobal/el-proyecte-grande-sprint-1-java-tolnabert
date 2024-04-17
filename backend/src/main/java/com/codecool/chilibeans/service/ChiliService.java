@@ -8,6 +8,7 @@ import com.codecool.chilibeans.model.User;
 import com.codecool.chilibeans.model.recipe.Recipe;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class ChiliService implements ChiliServiceInterface {
     public Set<UserDTO> getAllUsers() {
         Set<UserDTO> userDTOs = new HashSet<>();
         for (User user : users) {
-            userDTOs.add(new UserDTO(user.id(), user.username(), user.password(), user.firstName(), user.lastName(), user.dateOfBirth(),
+            userDTOs.add(new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                     user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate()));
         }
         return userDTOs;
@@ -33,7 +34,7 @@ public class ChiliService implements ChiliServiceInterface {
         User user = users.stream().filter(user1 -> user1.id().equals(id))
                 .findFirst()
                 .orElse(null);
-        return new UserDTO(user.id(), user.username(), user.password(), user.firstName(), user.lastName(), user.dateOfBirth(),
+        return new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                 user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate());
     }
 
@@ -43,7 +44,7 @@ public class ChiliService implements ChiliServiceInterface {
                 newUserDTO.lastName(), newUserDTO.dateOfBirth(), newUserDTO.email(), newUserDTO.ownRecipes(), newUserDTO.favoredRecipes(),
                 null);
         users.add(newUser);
-        return new UserDTO(newUser.id(), newUser.username(), newUser.password(), newUser.firstName(), newUser.lastName(),
+        return new UserDTO(newUser.id(), newUser.username(), newUser.firstName(), newUser.lastName(),
                 newUser.dateOfBirth(), newUser.email(), newUser.ownRecipes(), newUser.favoredRecipes(), null);
     }
 
@@ -62,7 +63,7 @@ public class ChiliService implements ChiliServiceInterface {
 
 
     @Override
-    public boolean DeleteUserById(UUID id) {
+    public boolean deleteUserById(UUID id) {
         return users.removeIf(user -> user.id().equals(id));
     }
 
@@ -71,7 +72,7 @@ public class ChiliService implements ChiliServiceInterface {
         Set<RecipeDTO> recipeDTOs = new HashSet<>();
         for (Recipe recipe : recipes) {
             recipeDTOs.add(new RecipeDTO(recipe.id(), recipe.name(),
-                    recipe.description(), recipe.diets()));
+                    recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt()));
         }
         return recipeDTOs;
     }
@@ -80,15 +81,14 @@ public class ChiliService implements ChiliServiceInterface {
     public RecipeDTO getRecipeById(UUID id) {
         Recipe recipe = recipes.stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
         return new RecipeDTO(recipe.id(), recipe.name(),
-                recipe.description(), recipe.diets());
+                recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt());
     }
 
     @Override
     public RecipeDTO createNewRecipe(NewRecipeDTO newRecipeDTO) {
-        Recipe newRecipe = new Recipe(0, UUID.randomUUID(),
-                newRecipeDTO.name(), newRecipeDTO.description(), newRecipeDTO.diets());
+        Recipe newRecipe = new Recipe(0, UUID.randomUUID(), newRecipeDTO.name(), newRecipeDTO.description(), newRecipeDTO.diets(), newRecipeDTO.ingredients(), newRecipeDTO.steps(), newRecipeDTO.portions(), newRecipeDTO.image(), newRecipeDTO.createdBy(), LocalDate.now());
         recipes.add(newRecipe);
-        return new RecipeDTO(newRecipe.id(), newRecipe.name(), newRecipe.description(), newRecipe.diets());
+        return new RecipeDTO(newRecipe.id(), newRecipe.name(), newRecipe.description(), newRecipe.diets(), newRecipe.ingredients(), newRecipe.steps(), newRecipe.portions(), newRecipe.image(), newRecipe.createdBy(), newRecipe.createdAt());
     }
 
     @Override
@@ -97,15 +97,14 @@ public class ChiliService implements ChiliServiceInterface {
                 .filter(recipe -> recipe.id().equals(id))
                 .findFirst()
                 .orElse(null);
-        Recipe updatedRecipe = new Recipe(recipeToUpdate.dataBaseId(), recipeDTO.id(),
-                recipeDTO.name(), recipeDTO.description(), recipeDTO.diets());
+        Recipe updatedRecipe = new Recipe(recipeToUpdate.dataBaseId(), recipeDTO.id(), recipeDTO.name(), recipeDTO.description(), recipeDTO.diets(), recipeDTO.ingredients(), recipeDTO.steps(), recipeDTO.portions(), recipeDTO.image(), recipeDTO.createdBy(), recipeDTO.createdAt());
         recipes.remove(recipeToUpdate);
         recipes.add(updatedRecipe);
         return recipeDTO;
     }
 
     @Override
-    public boolean DeleteRecipeById(UUID id) {
+    public boolean deleteRecipeById(UUID id) {
         Recipe recipeToDelete = recipes.stream()
                 .filter(recipe -> recipe.id().equals(id))
                 .findFirst()
