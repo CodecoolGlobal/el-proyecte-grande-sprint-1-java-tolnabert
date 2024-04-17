@@ -14,6 +14,10 @@ public class UnitController {
 
     ChiliServiceInterface chiliService;
 
+    public UnitController(ChiliServiceInterface chiliService) {
+        this.chiliService = chiliService;
+    }
+
     @GetMapping("")
     public Set<UnitDTO> getAllUnits(){
        return chiliService.getAllUnits();
