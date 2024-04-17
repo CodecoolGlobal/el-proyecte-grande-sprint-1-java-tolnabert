@@ -4,6 +4,8 @@ import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
+import com.codecool.chilibeans.controller.dto.unit.NewUnitDTO;
+import com.codecool.chilibeans.controller.dto.unit.UnitDTO;
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
 import com.codecool.chilibeans.model.recipe.Diet;
@@ -48,4 +50,16 @@ public interface ChiliServiceInterface {
     DietDTO updateDiet(UUID id, DietDTO dietDTO);
 
     boolean deleteDietById(UUID id);
+
+    // Unit
+  
+    Set<UnitDTO> getAllUnits();
+
+    UnitDTO createNewUnit(NewUnitDTO newUnitDTO);
+
+    UnitDTO getUnitById(UUID uuid);
+
+    UnitDTO deleteUnitById(UUID uuid);
+
+    UnitDTO updateUnitById(UUID uuid, UnitDTO unitDTO);
 }
