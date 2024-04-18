@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,10 +15,6 @@ import java.util.UUID;
 public class RecipeServiceImpl implements RecipeService {
 
     private final Set<Recipe> recipes = new HashSet<>();
-
-
-
-    // Recipe service
 
     @Override
     public Set<RecipeDTO> getAllRecipes() {
@@ -31,15 +28,20 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeDTO getRecipeById(UUID id) {
-        Recipe recipe = recipes.stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
+        Recipe recipe = recipes.stream().filter(r -> r.id().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
+
         return new RecipeDTO(recipe.id(), recipe.name(),
                 recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt());
     }
 
     @Override
     public RecipeDTO createNewRecipe(NewRecipeDTO newRecipeDTO) {
+        //TODO change dataBaseId after DB mounted
         Recipe newRecipe = new Recipe(0, UUID.randomUUID(), newRecipeDTO.name(), newRecipeDTO.description(), newRecipeDTO.diets(), newRecipeDTO.ingredients(), newRecipeDTO.steps(), newRecipeDTO.portions(), newRecipeDTO.image(), newRecipeDTO.createdBy(), LocalDate.now());
         recipes.add(newRecipe);
+
         return new RecipeDTO(newRecipe.id(), newRecipe.name(), newRecipe.description(), newRecipe.diets(), newRecipe.ingredients(), newRecipe.steps(), newRecipe.portions(), newRecipe.image(), newRecipe.createdBy(), newRecipe.createdAt());
     }
 
@@ -48,10 +50,12 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipeToUpdate = recipes.stream()
                 .filter(recipe -> recipe.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
+
         Recipe updatedRecipe = new Recipe(recipeToUpdate.dataBaseId(), recipeDTO.id(), recipeDTO.name(), recipeDTO.description(), recipeDTO.diets(), recipeDTO.ingredients(), recipeDTO.steps(), recipeDTO.portions(), recipeDTO.image(), recipeDTO.createdBy(), recipeDTO.createdAt());
         recipes.remove(recipeToUpdate);
         recipes.add(updatedRecipe);
+
         return recipeDTO;
     }
 
@@ -60,16 +64,8 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipeToDelete = recipes.stream()
                 .filter(recipe -> recipe.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
+
         return recipes.remove(recipeToDelete);
     }
-
-    // Diet service
-
-
-
-
-// Unit Service
-
-
 }
