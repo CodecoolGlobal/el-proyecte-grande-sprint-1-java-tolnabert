@@ -1,6 +1,6 @@
 function FavoriteRecipes() {
   return (
-    <div>FavoriteRecipes</div>
+    <div>FavoriteRecipes - filter-sort-pagination</div>
   )
 }
 export default FavoriteRecipes

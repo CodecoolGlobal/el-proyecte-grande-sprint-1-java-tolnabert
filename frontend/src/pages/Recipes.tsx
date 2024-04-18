@@ -20,6 +20,8 @@ function Recipes() {
   
   return (
     <div>
+      {/* to do on backend  */}
+      <p>filter & sort & pagination</p>
       {recipes &&
         recipes.map((recipe) => {
           return <p key={recipe.id}>{recipe.name}</p>;
