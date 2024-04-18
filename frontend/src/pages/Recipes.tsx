@@ -1,5 +1,7 @@
+import RecipeCard from "../components/RecipeCard";
 import useFetch from "../hooks";
 import { Recipe } from "../utils/types";
+import "./Recipes.css"
 
 function Recipes() {
   const {
@@ -17,15 +19,17 @@ function Recipes() {
   }
 
   console.log(recipes);
-  
+
   return (
     <div>
-      {/* to do on backend  */}
-      <p>filter & sort & pagination</p>
-      {recipes &&
-        recipes.map((recipe) => {
-          return <p key={recipe.id}>{recipe.name}</p>;
-        })}
+        <p>filter & sort & pagination</p>
+      <div className="recipe-container">
+        {/* to do on backend  */}
+        {recipes &&
+          recipes.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+      </div>
     </div>
   );
 }
