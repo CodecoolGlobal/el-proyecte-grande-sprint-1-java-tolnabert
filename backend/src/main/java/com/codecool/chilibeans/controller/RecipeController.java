@@ -2,7 +2,7 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
-import com.codecool.chilibeans.service.ChiliServiceInterface;
+import com.codecool.chilibeans.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,36 +13,36 @@ import java.util.UUID;
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final ChiliServiceInterface chiliService;
+    private final RecipeService service;
 
     @Autowired
-    public RecipeController(ChiliServiceInterface chiliService) {
-        this.chiliService = chiliService;
+    public RecipeController(RecipeService chiliService) {
+        this.service = chiliService;
     }
 
     @GetMapping("")
     public Set<RecipeDTO> getAllRecipes() {
-        return chiliService.getAllRecipes();
+        return service.getAllRecipes();
     }
 
     @GetMapping("/{id}")
     public RecipeDTO getRecipeById(@PathVariable UUID id) {
-        return chiliService.getRecipeById(id);
+        return service.getRecipeById(id);
     }
 
     @PostMapping("")
     public RecipeDTO createNewRecipe(@RequestBody NewRecipeDTO newRecipeDTO) {
-        return chiliService.createNewRecipe(newRecipeDTO);
+        return service.createNewRecipe(newRecipeDTO);
     }
 
     @PatchMapping("/{id}")
     public RecipeDTO updateRecipe(@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO) {
-        return chiliService.updateRecipe(id, recipeDTO);
+        return service.updateRecipe(id, recipeDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteRecipe(@PathVariable UUID id) {
-        return chiliService.deleteRecipeById(id);
+        return service.deleteRecipeById(id);
     }
 
 }
