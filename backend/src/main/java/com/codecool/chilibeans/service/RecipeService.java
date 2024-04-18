@@ -3,12 +3,12 @@ package com.codecool.chilibeans.service;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public interface RecipeService {
 
-    Set<RecipeDTO> getAllRecipes();
+    List<RecipeDTO> getAllRecipes(String sortBy, String sorOrder);
 
     RecipeDTO getRecipeById(UUID id);
 
