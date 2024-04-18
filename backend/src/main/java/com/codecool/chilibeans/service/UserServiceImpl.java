@@ -6,6 +6,7 @@ import com.codecool.chilibeans.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,14 +22,17 @@ public class UserServiceImpl implements UserService {
             userDTOs.add(new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                     user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate()));
         }
+
         return userDTOs;
     }
 
     @Override
     public UserDTO getUserById(UUID id) {
-        User user = users.stream().filter(user1 -> user1.id().equals(id))
+        User user = users.stream()
+                .filter(user1 -> user1.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
+
         return new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
                 user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate());
     }
@@ -47,12 +51,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UUID id, UserDTO userDTO) {
         User userToUpdate = users.stream().filter(user1 -> user1.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));//throw exception noSuchElement e + error message, controller catches it
+        //aspect oriented programming - AOP with advice
+
         User updatedUser = new User(userToUpdate.databaseId(), userToUpdate.id(), userDTO.username(), userToUpdate.password(),
                 userDTO.firstName(), userDTO.lastName(), userDTO.dateOfBirth(),
                 userDTO.email(), userDTO.ownRecipes(), userDTO.favoredRecipes(), userToUpdate.creationDate());
+
         users.remove(userToUpdate);
         users.add(updatedUser);
+
         return userDTO;
     }
 

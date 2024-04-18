@@ -6,6 +6,7 @@ import com.codecool.chilibeans.model.recipe.Diet;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public class DietServiceImpl implements DietService {
     @Override
     public Set<DietDTO> getAllDiets() {
         Set<DietDTO> dietDTOs = new HashSet<>();
-        for (Diet diet : diets){
+        for (Diet diet : diets) {
             dietDTOs.add(new DietDTO(diet.id(), diet.name()));
         }
         return dietDTOs;
@@ -28,7 +29,7 @@ public class DietServiceImpl implements DietService {
         Diet diet = diets.stream()
                 .filter(diet1 -> diet1.id().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("Diet not found with ID: " + id));
 
         return new DietDTO(diet.id(), diet.name());
     }
@@ -43,7 +44,9 @@ public class DietServiceImpl implements DietService {
     @Override
     public DietDTO updateDiet(UUID id, DietDTO dietDTO) {
         Diet dietToUpdate = diets.stream().filter(diet -> diet.id().equals(id))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Diet not found with ID: " + id));
+
         Diet updatedDiet = new Diet(0, dietToUpdate.id(), dietDTO.name());
         diets.add(updatedDiet);
         diets.remove(dietToUpdate);
