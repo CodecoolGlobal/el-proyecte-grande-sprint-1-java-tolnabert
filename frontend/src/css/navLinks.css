@@ -1,0 +1,13 @@
+.navlink-select {
+  color: darkred;
+  background-color: aquamarine;
+}
+.navlink-label {
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+}
+.navlink-label:hover {
+  color: crimson;
+  background-color: coral;
+}
