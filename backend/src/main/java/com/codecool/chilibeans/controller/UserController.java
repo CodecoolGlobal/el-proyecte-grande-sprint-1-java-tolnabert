@@ -2,7 +2,7 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
-import com.codecool.chilibeans.service.ChiliServiceInterface;
+import com.codecool.chilibeans.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -12,9 +12,9 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final ChiliServiceInterface service;
+    private final UserService service;
 
-    public UserController(ChiliServiceInterface service) {
+    public UserController(UserService service) {
         this.service = service;
     }
 

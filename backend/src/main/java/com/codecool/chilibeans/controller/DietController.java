@@ -2,7 +2,7 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
-import com.codecool.chilibeans.service.ChiliServiceInterface;
+import com.codecool.chilibeans.service.DietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,35 +13,35 @@ import java.util.UUID;
 @RequestMapping("/api/diets")
 public class DietController {
 
-    private final ChiliServiceInterface chiliService;
+    private final DietService service;
 
     @Autowired
-    public DietController(ChiliServiceInterface chiliService) {
-        this.chiliService = chiliService;
+    public DietController(DietService chiliService) {
+        this.service = chiliService;
     }
 
     @GetMapping("")
     public Set<DietDTO> getDiets() {
-        return chiliService.getAllDiets();
+        return service.getAllDiets();
     }
 
     @GetMapping("/{id}")
     public DietDTO getDiet(@PathVariable UUID id) {
-        return chiliService.getDietById(id);
+        return service.getDietById(id);
     }
 
     @PostMapping("")
     public DietDTO createDiet(@RequestBody NewDietDTO newDietDTO) {
-        return chiliService.createNewDiet(newDietDTO);
+        return service.createNewDiet(newDietDTO);
     }
 
     @PatchMapping("/{id}")
     public DietDTO updateDiet(@PathVariable UUID id, @RequestBody DietDTO dietDTO) {
-        return chiliService.updateDiet(id, dietDTO);
+        return service.updateDiet(id, dietDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteDiet(@PathVariable UUID id) {
-        return chiliService.deleteDietById(id);
+        return service.deleteDietById(id);
     }
 }
