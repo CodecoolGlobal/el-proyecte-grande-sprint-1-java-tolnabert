@@ -6,10 +6,12 @@ import com.codecool.chilibeans.model.recipe.Recipe;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -17,13 +19,29 @@ public class RecipeServiceImpl implements RecipeService {
     private final Set<Recipe> recipes = new HashSet<>();
 
     @Override
-    public Set<RecipeDTO> getAllRecipes() {
-        Set<RecipeDTO> recipeDTOs = new HashSet<>();
+    public List<RecipeDTO> getAllRecipes(String sortBy, String sorOrder) {
+        List<RecipeDTO> recipeDTOs = new LinkedList<>();
         for (Recipe recipe : recipes) {
             recipeDTOs.add(new RecipeDTO(recipe.id(), recipe.name(),
                     recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt()));
         }
-        return recipeDTOs;
+
+
+        return sortRecipes(recipeDTOs, sortBy, sorOrder);
+    }
+
+    private List<RecipeDTO> sortRecipes(List<RecipeDTO> recipes, String sortBy, String sortOrder){
+        Comparator<RecipeDTO> comparator = Comparator.comparing(RecipeDTO::name);
+
+        if ("createdAt".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(RecipeDTO::createdAt);
+        }
+
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
+        }
+
+        return recipes.stream().sorted(comparator).toList();
     }
 
     @Override

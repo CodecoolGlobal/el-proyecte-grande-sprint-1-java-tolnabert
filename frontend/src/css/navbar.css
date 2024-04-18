@@ -1,0 +1,6 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  background-color: darkgray;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+}
