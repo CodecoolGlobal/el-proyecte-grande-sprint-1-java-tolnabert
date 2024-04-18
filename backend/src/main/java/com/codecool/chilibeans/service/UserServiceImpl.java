@@ -47,8 +47,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UUID id, UserDTO userDTO) {
         User userToUpdate = users.stream().filter(user1 -> user1.id().equals(id))
                 .findFirst()
-                .orElse(null); //throw exception noSuchElement e + error message, controller catches it
-        //aspect oriented programming - AOP with advice
+                .orElse(null);
         User updatedUser = new User(userToUpdate.databaseId(), userToUpdate.id(), userDTO.username(), userToUpdate.password(),
                 userDTO.firstName(), userDTO.lastName(), userDTO.dateOfBirth(),
                 userDTO.email(), userDTO.ownRecipes(), userDTO.favoredRecipes(), userToUpdate.creationDate());

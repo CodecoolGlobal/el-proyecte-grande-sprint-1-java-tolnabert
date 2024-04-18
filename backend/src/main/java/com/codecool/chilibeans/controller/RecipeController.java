@@ -6,7 +6,7 @@ import com.codecool.chilibeans.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,8 +21,9 @@ public class RecipeController {
     }
 
     @GetMapping("")
-    public Set<RecipeDTO> getAllRecipes() {
-        return service.getAllRecipes();
+    public List<RecipeDTO> getAllRecipes(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
+                                         @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
+        return service.getAllRecipes(sortBy, sorOrder);
     }
 
     @GetMapping("/{id}")
