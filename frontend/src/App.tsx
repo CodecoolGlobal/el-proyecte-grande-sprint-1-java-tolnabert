@@ -6,9 +6,10 @@ import Recipes from "./pages/Recipes";
 import AboutUs from "./pages/AboutUs";
 import FavoriteRecipes from "./pages/FavoriteRecipes";
 import ShoppingList from "./pages/ShoppingList";
-import SelectedRecipes from "./pages/SelectedRecipes";
+import MyRecipes from "./pages/MyRecipes";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import CreateRecipe from "./pages/CreateRecipe";
 
 const router = createBrowserRouter([
   {
@@ -32,8 +33,12 @@ const router = createBrowserRouter([
         element: <FavoriteRecipes />,
       },
       {
-        path: "/selected-recipes",
-        element: <SelectedRecipes />,
+        path: "/my-recipes",
+        element: <MyRecipes />,
+      },
+      {
+        path: "/create-recipe",
+        element: <CreateRecipe />,
       },
       {
         path: "/shopping-list",
