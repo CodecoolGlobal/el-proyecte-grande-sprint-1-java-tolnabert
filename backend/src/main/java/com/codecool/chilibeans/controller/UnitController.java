@@ -12,35 +12,34 @@ import java.util.UUID;
 @RequestMapping("/api/units")
 public class UnitController {
 
-    UnitService unitService;
+    private final UnitService unitService;
 
     public UnitController(UnitService unitService) {
         this.unitService = unitService;
     }
 
     @GetMapping("")
-    public Set<UnitDTO> getAllUnits() {
-        return unitService.getAllUnits();
+    public Set<UnitDTO> getAll() {
+        return unitService.getAll();
     }
 
     @GetMapping("/{id}")
-    public UnitDTO getUnitById(@PathVariable("id") UUID uuid) {
-        return unitService.getUnitById(uuid);
+    public UnitDTO getById(@PathVariable("id") UUID uuid) {
+        return unitService.getById(uuid);
     }
 
     @PostMapping("")
-    public UnitDTO createUnit(@RequestBody NewUnitDTO newUnitDTO) {
-        return unitService.createNewUnit(newUnitDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    public UnitDTO deleteUnitById(@PathVariable("id") UUID uuid) {
-        return unitService.deleteUnitById(uuid);
+    public UnitDTO create(@RequestBody NewUnitDTO newUnitDTO) {
+        return unitService.create(newUnitDTO);
     }
 
     @PatchMapping("/{id}")
-    public UnitDTO updateUnitById(@PathVariable("id") UUID uuid, @RequestBody UnitDTO unitDTO) {
-        return unitService.updateUnitById(uuid, unitDTO);
+    public UnitDTO updateById(@PathVariable("id") UUID uuid, @RequestBody UnitDTO unitDTO) {
+        return unitService.updateById(uuid, unitDTO);
     }
 
+    @DeleteMapping("/{id}")
+    public UnitDTO deleteById(@PathVariable("id") UUID uuid) {
+        return unitService.deleteById(uuid);
+    }
 }

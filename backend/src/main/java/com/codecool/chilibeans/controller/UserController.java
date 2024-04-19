@@ -12,34 +12,34 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
-    public UserController(UserService service) {
-        this.service = service;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("")
-    public Set<UserDTO> getAllUsers() {
-        return service.getAllUsers();
+    public Set<UserDTO> getAll() {
+        return userService.getAll();
     }
 
     @GetMapping("/{id}")
-    public UserDTO getAllUserById(@PathVariable("id") UUID uuid) {
-        return service.getUserById(uuid);
+    public UserDTO getById(@PathVariable("id") UUID uuid) {
+        return userService.getById(uuid);
     }
 
     @PostMapping("")
-    public UserDTO createNewUser(@RequestBody NewUserDTO newUserDTO) {
-        return service.createNewUser(newUserDTO);
+    public UserDTO create(@RequestBody NewUserDTO newUserDTO) {
+        return userService.create(newUserDTO);
     }
 
     @PatchMapping("/{id}")
-    public UserDTO updateUser(@PathVariable("id") UUID uuid, @RequestBody UserDTO userDTO) {
-        return service.updateUser(uuid, userDTO);
+    public UserDTO updateById(@PathVariable("id") UUID uuid, @RequestBody UserDTO userDTO) {
+        return userService.updateById(uuid, userDTO);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable("id") UUID uuid) {
-        return service.deleteUserById(uuid);
+    public boolean deleteById(@PathVariable("id") UUID uuid) {
+        return userService.deleteById(uuid);
     }
 }
