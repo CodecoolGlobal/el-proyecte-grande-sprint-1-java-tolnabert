@@ -13,37 +13,37 @@ import java.util.UUID;
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeService service;
+    private final RecipeService recipeService;
 
     @Autowired
-    public RecipeController(RecipeService chiliService) {
-        this.service = chiliService;
+    public RecipeController(RecipeService recipeService) {
+        this.recipeService = recipeService;
     }
 
     @GetMapping("")
-    public List<RecipeDTO> getAllRecipes(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
-                                         @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
-        return service.getAllRecipes(sortBy, sorOrder);
+    public List<RecipeDTO> getAll(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
+                                  @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
+        return recipeService.getAll(sortBy, sorOrder);
     }
 
     @GetMapping("/{id}")
-    public RecipeDTO getRecipeById(@PathVariable UUID id) {
-        return service.getRecipeById(id);
+    public RecipeDTO getById(@PathVariable UUID id) {
+        return recipeService.getById(id);
     }
 
     @PostMapping("")
-    public RecipeDTO createNewRecipe(@RequestBody NewRecipeDTO newRecipeDTO) {
-        return service.createNewRecipe(newRecipeDTO);
+    public RecipeDTO create(@RequestBody NewRecipeDTO newRecipeDTO) {
+        return recipeService.create(newRecipeDTO);
     }
 
     @PatchMapping("/{id}")
-    public RecipeDTO updateRecipe(@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO) {
-        return service.updateRecipe(id, recipeDTO);
+    public RecipeDTO updateById(@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO) {
+        return recipeService.updateById(id, recipeDTO);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteRecipe(@PathVariable UUID id) {
-        return service.deleteRecipeById(id);
+    public boolean deleteById(@PathVariable UUID id) {
+        return recipeService.deleteById(id);
     }
 
 }

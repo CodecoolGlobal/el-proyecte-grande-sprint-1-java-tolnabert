@@ -13,35 +13,35 @@ import java.util.UUID;
 @RequestMapping("/api/diets")
 public class DietController {
 
-    private final DietService service;
+    private final DietService dietService;
 
     @Autowired
-    public DietController(DietService chiliService) {
-        this.service = chiliService;
+    public DietController(DietService dietService) {
+        this.dietService = dietService;
     }
 
     @GetMapping("")
-    public Set<DietDTO> getDiets() {
-        return service.getAllDiets();
+    public Set<DietDTO> getAll() {
+        return dietService.getAll();
     }
 
     @GetMapping("/{id}")
-    public DietDTO getDiet(@PathVariable UUID id) {
-        return service.getDietById(id);
+    public DietDTO getById(@PathVariable UUID id) {
+        return dietService.getById(id);
     }
 
     @PostMapping("")
-    public DietDTO createDiet(@RequestBody NewDietDTO newDietDTO) {
-        return service.createNewDiet(newDietDTO);
+    public DietDTO create(@RequestBody NewDietDTO newDietDTO) {
+        return dietService.create(newDietDTO);
     }
 
     @PatchMapping("/{id}")
-    public DietDTO updateDiet(@PathVariable UUID id, @RequestBody DietDTO dietDTO) {
-        return service.updateDiet(id, dietDTO);
+    public DietDTO updateById(@PathVariable UUID id, @RequestBody DietDTO dietDTO) {
+        return dietService.updateById(id, dietDTO);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteDiet(@PathVariable UUID id) {
-        return service.deleteDietById(id);
+    public boolean deleteById(@PathVariable UUID id) {
+        return dietService.deleteById(id);
     }
 }
