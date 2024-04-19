@@ -16,8 +16,8 @@ public class DietController {
     private final DietService dietService;
 
     @Autowired
-    public DietController(DietService chiliService) {
-        this.dietService = chiliService;
+    public DietController(DietService dietService) {
+        this.dietService = dietService;
     }
 
     @GetMapping("")
