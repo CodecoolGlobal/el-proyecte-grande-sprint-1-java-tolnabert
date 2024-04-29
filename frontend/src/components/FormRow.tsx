@@ -1,10 +1,10 @@
-import React, { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC } from "react";
 
 type FormRowProps = {
   type: string;
   name: string;
   labelText?: string;
-  value?: string | null;
+  value?: string | number | null;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
 }
