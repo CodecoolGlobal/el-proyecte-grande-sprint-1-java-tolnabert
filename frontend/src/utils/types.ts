@@ -21,3 +21,8 @@ export type Recipe = {
   createdBy: User;
   createdAt: Date;
 };
+
+export type Diet = {
+  name: string;
+  isChecked: boolean;
+}
