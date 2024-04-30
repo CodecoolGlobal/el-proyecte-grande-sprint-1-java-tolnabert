@@ -20,28 +20,28 @@ public class DietController {
         this.dietService = dietService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public Set<DietDTO> getAll() {
         return dietService.getAll();
     }
 
     @GetMapping("/{id}")
     public DietDTO getById(@PathVariable UUID id) {
-        return dietService.getById(id);
+        return dietService.getByPublicId(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     public DietDTO create(@RequestBody NewDietDTO newDietDTO) {
-        return dietService.create(newDietDTO);
+        return dietService.save(newDietDTO);
     }
 
     @PatchMapping("/{id}")
-    public DietDTO updateById(@PathVariable UUID id, @RequestBody DietDTO dietDTO) {
-        return dietService.updateById(id, dietDTO);
+    public DietDTO updateById(@RequestBody DietDTO dietDTO) {
+        return dietService.updateByPublicId(dietDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable UUID id) {
-        return dietService.deleteById(id);
+        return dietService.deleteByPublicId(id);
     }
 }

@@ -3,6 +3,9 @@ package com.codecool.chilibeans.service;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.model.recipe.Recipe;
+import com.codecool.chilibeans.repository.recipe.RecipeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,21 +15,42 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
 
-    private final Set<Recipe> recipes = new HashSet<>();
+    private final RecipeRepository recipeRepository;
 
-    public List<RecipeDTO> getAll(String sortBy, String sorOrder) {
-        List<RecipeDTO> recipeDTOs = new LinkedList<>();
-        for (Recipe recipe : recipes) {
-            recipeDTOs.add(new RecipeDTO(recipe.id(), recipe.name(),
-                    recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt()));
+    @Autowired
+    public RecipeService(RecipeRepository recipeRepository) {
+        this.recipeRepository = recipeRepository;
+    }
+
+    public Set<RecipeDTO> getAll(String sortBy, String sortOrder) {
+
+        if (sortOrder.equals("asc")) {
+            Sort.Direction sortDirection = Sort.Direction.ASC;
+
+        } else if (sortOrder.equals("desc")) {
+            Sort.Direction sortDirection = Sort.Direction.DESC;
+
         }
 
+        Sort sort = Sort.by(sortBy).;
 
-        return sort(recipeDTOs, sortBy, sorOrder);
+        return recipeRepository.findAll(Sort.by(sortBy).ascending()).stream().map(recipe -> new RecipeDTO(
+               recipe.getPublicId(),
+               recipe.getName(),
+               recipe.getDescription(),
+               recipe.getDiets(),
+               recipe.getIngredients(),
+               recipe.getSteps(),
+               recipe.getPortions(),
+               recipe.getImage(),
+               recipe.getCreatedBy().getPublicId(),
+               recipe.getCreatedAt()
+       )).collect(Collectors.toSet());
     }
 
     private List<RecipeDTO> sort(List<RecipeDTO> recipes, String sortBy, String sortOrder) {

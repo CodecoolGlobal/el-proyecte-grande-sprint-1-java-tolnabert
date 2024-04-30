@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -21,8 +22,8 @@ public class RecipeController {
     }
 
     @GetMapping("")
-    public List<RecipeDTO> getAll(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
-                                  @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
+    public Set<RecipeDTO> getAll(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
+                                 @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
         return recipeService.getAll(sortBy, sorOrder);
     }
 
