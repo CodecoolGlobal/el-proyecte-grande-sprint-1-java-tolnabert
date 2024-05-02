@@ -2,65 +2,87 @@ package com.codecool.chilibeans.service;
 
 import com.codecool.chilibeans.controller.dto.user.NewUserDTO;
 import com.codecool.chilibeans.controller.dto.user.UserDTO;
-import com.codecool.chilibeans.model.User;
+import com.codecool.chilibeans.model.Client;
+import com.codecool.chilibeans.repository.ClientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private final Set<User> users = new HashSet<>();
+    private final ClientRepository clientRepository;
+
+    @Autowired
+    public UserService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     public Set<UserDTO> getAll() {
-        Set<UserDTO> userDTOs = new HashSet<>();
-        for (User user : users) {
-            userDTOs.add(new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
-                    user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate()));
+        List<Client> clients = clientRepository.findAll();
+
+        return clients.stream().map(user -> new UserDTO(user.getPublicId(), user.getClientName(), user.getFirstName(), user.getLastName(), user.getDateOfBirth(), user.getEmail(), user.getOwnRecipes(), user.getFavoredRecipes(), user.getCreationDate())).collect(Collectors.toSet());
+    }
+
+    public UserDTO getByPublicId(UUID publicId) {
+        Client client = clientRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + publicId));
+
+        return new UserDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
+                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
+    }
+
+    public UserDTO save(NewUserDTO newUserDTO) {
+        Optional<Client> optionalUser = clientRepository.findByClientNameIgnoreCase(newUserDTO.username());
+        if(optionalUser.isEmpty()){
+            //TODO lehet nem nev alapjan kene itt keresni
+            Client newClient = new Client();
+            newClient.setPublicId(UUID.randomUUID());
+            newClient.setClientName(newUserDTO.username());
+            newClient.setPassword(newUserDTO.password());
+            newClient.setFirstName(newUserDTO.firstName());
+            newClient.setLastName(newUserDTO.lastName());
+            newClient.setDateOfBirth(newUserDTO.dateOfBirth());
+            newClient.setEmail(newUserDTO.email());
+            newClient.setOwnRecipes(newUserDTO.ownRecipes());
+            newClient.setFavoredRecipes(newUserDTO.favoredRecipes());
+            newClient.setCreationDate(LocalDate.now());
+            clientRepository.save(newClient);
+            return new UserDTO(newClient.getPublicId(), newClient.getClientName(), newClient.getFirstName(), newClient.getLastName(), newClient.getDateOfBirth(),
+                    newClient.getEmail(), newClient.getOwnRecipes(), newClient.getFavoredRecipes(), newClient.getCreationDate());
         }
-
-        return userDTOs;
+        Client client = optionalUser.get();
+        return new UserDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
+                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
     }
 
-    public UserDTO getById(UUID id) {
-        User user = users.stream()
-                .filter(user1 -> user1.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
+    public UserDTO updateByPublicId(UserDTO userDTO) {
+        Optional<Client> optionalUser = clientRepository.findByPublicId(userDTO.publicId());
+        if(optionalUser.isEmpty()){
+            throw new NoSuchElementException();
+        }
+        Client client = optionalUser.get();
 
-        return new UserDTO(user.id(), user.username(), user.firstName(), user.lastName(), user.dateOfBirth(),
-                user.email(), user.ownRecipes(), user.favoredRecipes(), user.creationDate());
+        client.setPublicId(UUID.randomUUID());
+        client.setClientName(userDTO.username());
+        //TODO password?
+        client.setFirstName(userDTO.firstName());
+        client.setLastName(userDTO.lastName());
+        client.setDateOfBirth(userDTO.dateOfBirth());
+        client.setEmail(userDTO.email());
+        client.setOwnRecipes(userDTO.ownRecipes());
+        client.setFavoredRecipes(userDTO.favoredRecipes());
+        client.setCreationDate(LocalDate.now());
+        clientRepository.save(client);
+
+        return new UserDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
+                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
     }
 
-    public UserDTO create(NewUserDTO newUserDTO) {
-        User newUser = new User(0, UUID.randomUUID(), newUserDTO.username(), newUserDTO.password(), newUserDTO.firstName(),
-                newUserDTO.lastName(), newUserDTO.dateOfBirth(), newUserDTO.email(), newUserDTO.ownRecipes(), newUserDTO.favoredRecipes(),
-                null);
-        users.add(newUser);
-        return new UserDTO(newUser.id(), newUser.username(), newUser.firstName(), newUser.lastName(),
-                newUser.dateOfBirth(), newUser.email(), newUser.ownRecipes(), newUser.favoredRecipes(), null);
-    }
-
-    public UserDTO updateById(UUID id, UserDTO userDTO) {
-        User userToUpdate = users.stream().filter(user1 -> user1.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));//throw exception noSuchElement e + error message, controller catches it
-        //aspect oriented programming - AOP with advice
-
-        User updatedUser = new User(userToUpdate.databaseId(), userToUpdate.id(), userDTO.username(), userToUpdate.password(),
-                userDTO.firstName(), userDTO.lastName(), userDTO.dateOfBirth(),
-                userDTO.email(), userDTO.ownRecipes(), userDTO.favoredRecipes(), userToUpdate.creationDate());
-
-        users.remove(userToUpdate);
-        users.add(updatedUser);
-
-        return userDTO;
-    }
-
-    public boolean deleteById(UUID id) {
-        return users.removeIf(user -> user.id().equals(id));
+    public boolean deleteByPublicId(UUID publicId) {
+        return clientRepository.deleteByPublicId(publicId);
     }
 }

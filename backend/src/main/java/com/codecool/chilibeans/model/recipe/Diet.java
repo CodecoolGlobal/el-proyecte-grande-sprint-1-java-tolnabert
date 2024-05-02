@@ -42,7 +42,7 @@ public class Diet {
     @Override
     public String toString() {
         return "Diet{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", publicId=" + publicId +
                 ", name='" + name + '\'' +
                 '}';

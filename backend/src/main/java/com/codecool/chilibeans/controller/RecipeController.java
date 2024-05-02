@@ -36,14 +36,14 @@ public class RecipeController {
         return recipeService.save(newRecipeDTO);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     public RecipeDTO updateById(@RequestBody RecipeDTO recipeDTO) {
-        return recipeService.updateById(recipeDTO);
+        return recipeService.updateByPublicId(recipeDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable UUID id) {
-        return recipeService.deleteById(id);
+        return recipeService.deleteByPublicId(id);
     }
 
 }

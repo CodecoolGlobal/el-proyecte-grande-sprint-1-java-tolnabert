@@ -25,21 +25,21 @@ public class UnitController {
 
     @GetMapping("/{id}")
     public UnitDTO getById(@PathVariable("id") UUID uuid) {
-        return unitService.getById(uuid);
+        return unitService.getByPublicId(uuid);
     }
 
     @PostMapping("")
     public UnitDTO create(@RequestBody NewUnitDTO newUnitDTO) {
-        return unitService.create(newUnitDTO);
+        return unitService.save(newUnitDTO);
     }
 
-    @PatchMapping("/{id}")
-    public UnitDTO updateById(@PathVariable("id") UUID uuid, @RequestBody UnitDTO unitDTO) {
-        return unitService.updateById(uuid, unitDTO);
+    @PatchMapping
+    public UnitDTO updateById(@RequestBody UnitDTO unitDTO) {
+        return unitService.updateById(unitDTO);
     }
 
     @DeleteMapping("/{id}")
-    public UnitDTO deleteById(@PathVariable("id") UUID uuid) {
-        return unitService.deleteById(uuid);
+    public boolean deleteById(@PathVariable("id") UUID uuid) {
+        return unitService.deleteByPublicId(uuid);
     }
 }

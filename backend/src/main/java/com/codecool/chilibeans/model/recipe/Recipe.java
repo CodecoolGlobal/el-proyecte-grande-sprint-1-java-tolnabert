@@ -1,6 +1,6 @@
 package com.codecool.chilibeans.model.recipe;
 
-import com.codecool.chilibeans.model.User;
+import com.codecool.chilibeans.model.Client;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -17,21 +17,21 @@ public class Recipe {
     private String name;
     private String description;
     @OneToMany
-    @JoinColumn(name = "diet_id")
+    @JoinColumn(name = "dietId")
     private Set<Diet> diets;
     @OneToMany
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(name = "ingredientId")
     private Set<Ingredient> ingredients;
     @OneToMany
-    @JoinColumn(name = "step_id")
+    @JoinColumn(name = "stepId")
     private List<Step> steps;
     private int portions;
     private String image;
     private LocalDate createdAt;
     @ManyToOne
-    private User createdBy;
+    private Client createdBy;
     @ManyToMany
-    private Set<User> favoredBy;
+    private Set<Client> favoredBy;
 
     public Long getId() {
         return id;
@@ -113,26 +113,26 @@ public class Recipe {
         this.createdAt = createdAt;
     }
 
-    public User getCreatedBy() {
+    public Client getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(Client createdBy) {
         this.createdBy = createdBy;
     }
 
-    public Set<User> getFavoredBy() {
+    public Set<Client> getFavoredBy() {
         return favoredBy;
     }
 
-    public void setFavoredBy(Set<User> favoredBy) {
+    public void setFavoredBy(Set<Client> favoredBy) {
         this.favoredBy = favoredBy;
     }
 
     @Override
     public String toString() {
         return "Recipe{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", publicId=" + publicId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

@@ -2,6 +2,7 @@ package com.codecool.chilibeans.service;
 
 import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.repository.recipe.DietRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class DietService {
         Diet diet = optionalDiet.get();
         diet.setName(dietDTO.name());
 
-        return dietDTO;
+        return new DietDTO(diet.getPublicId(), diet.getName());
     }
 
     public boolean deleteByPublicId(UUID publicId) {

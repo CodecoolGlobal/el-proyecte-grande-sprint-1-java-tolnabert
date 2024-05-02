@@ -1,19 +1,18 @@
 package com.codecool.chilibeans.service;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
-import com.codecool.chilibeans.model.User;
-import com.codecool.chilibeans.model.recipe.Diet;
+import com.codecool.chilibeans.model.Client;
 import com.codecool.chilibeans.model.recipe.Recipe;
-import com.codecool.chilibeans.repository.UserRepository;
+import com.codecool.chilibeans.repository.ClientRepository;
 import com.codecool.chilibeans.repository.recipe.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -24,12 +23,12 @@ import java.util.stream.Collectors;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
-    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository) {
+    public RecipeService(RecipeRepository recipeRepository, ClientRepository clientRepository) {
         this.recipeRepository = recipeRepository;
-        this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
     }
 
     public Set<RecipeDTO> getAll(String sortBy, String sortOrder) {
@@ -71,23 +70,20 @@ public class RecipeService {
                 recipe.getCreatedAt());
     }
 
-    public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
 
+    public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
         Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name());
         if (optionalRecipe.isEmpty()) {
-
-            User creator = userRepository.findByPublicId(newRecipeDTO.createdBy()).orElseThrow(NoSuchElementException::new);
+            Client creator = clientRepository.findByPublicId(newRecipeDTO.createdBy().getPublicId()).orElseThrow(NoSuchElementException::new);
 
             Recipe recipe = new Recipe();
             setRecipeBasedDTO(newRecipeDTO, recipe, creator);
-
             return convertToRecipeDTO(recipe);
         }
         throw new ElementMeantToSaveExists(newRecipeDTO);
-
     }
 
-    private void setRecipeBasedDTO(NewRecipeDTO newRecipeDTO, Recipe recipe, User creator) {
+    private void setRecipeBasedDTO(NewRecipeDTO newRecipeDTO, Recipe recipe, Client creator) {
         recipe.setPublicId(UUID.randomUUID());
         recipe.setName(newRecipeDTO.name());
         recipe.setDescription(newRecipeDTO.description());
@@ -102,21 +98,16 @@ public class RecipeService {
     }
 
 
-    public RecipeDTO updateById(RecipeDTO recipeDTO) {
+    public RecipeDTO updateByPublicId(RecipeDTO recipeDTO) {
 
         Recipe recipe = recipeRepository.findByPublicId(recipeDTO.publicId()).orElseThrow(NoSuchElementException::new);
+        return convertToRecipeDTO(recipe);
 
 
-
-        return recipeDTO;
     }
 
-    public boolean deleteById(UUID id) {
-        Recipe recipeToDelete = recipes.stream()
-                .filter(recipe -> recipe.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
-
-        return recipes.remove(recipeToDelete);
+    public boolean deleteByPublicId(UUID publicId) {
+        return recipeRepository.deleteByPublicId(publicId);
     }
+
 }
