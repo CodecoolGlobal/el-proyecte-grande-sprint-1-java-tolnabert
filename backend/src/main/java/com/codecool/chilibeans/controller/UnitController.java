@@ -28,7 +28,7 @@ public class UnitController {
         return unitService.getByPublicId(uuid);
     }
 
-    @PostMapping("")
+    @PostMapping
     public UnitDTO create(@RequestBody NewUnitDTO newUnitDTO) {
         return unitService.save(newUnitDTO);
     }

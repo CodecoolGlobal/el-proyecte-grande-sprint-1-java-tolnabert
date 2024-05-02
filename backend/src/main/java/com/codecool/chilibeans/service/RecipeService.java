@@ -1,9 +1,11 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.Client;
+import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.model.recipe.Recipe;
 import com.codecool.chilibeans.repository.ClientRepository;
 import com.codecool.chilibeans.repository.recipe.RecipeRepository;
@@ -61,7 +63,7 @@ public class RecipeService {
                 recipe.getPublicId(),
                 recipe.getName(),
                 recipe.getDescription(),
-                recipe.getDiets(),
+                convertToDietDTO(recipe.getDiets()),
                 recipe.getIngredients(),
                 recipe.getSteps(),
                 recipe.getPortions(),
@@ -70,11 +72,15 @@ public class RecipeService {
                 recipe.getCreatedAt());
     }
 
+    private static Set<DietDTO> convertToDietDTO(Set<Diet> diets) {
+        return diets.stream().map(diet -> new DietDTO(diet.getPublicId(), diet.getName())).collect(Collectors.toSet());
+    }
 
     public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
-        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name());
+        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name()); //TODO: Is the name really unique? Decide what makes a recipe unique
         if (optionalRecipe.isEmpty()) {
-            Client creator = clientRepository.findByPublicId(newRecipeDTO.createdBy().getPublicId()).orElseThrow(NoSuchElementException::new);
+            Client creator = clientRepository.findByPublicId(newRecipeDTO.createdBy()).orElseThrow( () -> new NoSuchElementException("User not found.")
+            );
 
             Recipe recipe = new Recipe();
             setRecipeBasedDTO(newRecipeDTO, recipe, creator);
@@ -101,13 +107,14 @@ public class RecipeService {
     public RecipeDTO updateByPublicId(RecipeDTO recipeDTO) {
 
         Recipe recipe = recipeRepository.findByPublicId(recipeDTO.publicId()).orElseThrow(NoSuchElementException::new);
+        //TODO: update it ... save
         return convertToRecipeDTO(recipe);
 
 
     }
 
     public boolean deleteByPublicId(UUID publicId) {
-        return recipeRepository.deleteByPublicId(publicId);
+        return recipeRepository.deleteByPublicId(publicId); //TODO: unsuccessful deletion sould throw execption
     }
 
 }

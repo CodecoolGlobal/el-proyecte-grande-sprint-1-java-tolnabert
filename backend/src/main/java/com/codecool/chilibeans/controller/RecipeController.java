@@ -20,7 +20,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public Set<RecipeDTO> getAll(@RequestParam(required = false, defaultValue = "name", name = "sortBy") String sortBy,
                                  @RequestParam(required = false, defaultValue = "asc", name = "sortOrder") String sorOrder) {
         return recipeService.getAll(sortBy, sorOrder);
@@ -31,7 +31,7 @@ public class RecipeController {
         return recipeService.getByPublicId(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     public RecipeDTO create(@RequestBody NewRecipeDTO newRecipeDTO) {
         return recipeService.save(newRecipeDTO);
     }

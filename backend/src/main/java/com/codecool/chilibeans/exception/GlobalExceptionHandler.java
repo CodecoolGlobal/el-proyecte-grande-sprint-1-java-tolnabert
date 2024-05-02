@@ -1,7 +1,6 @@
 package com.codecool.chilibeans.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,15 +13,15 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNoSuchElementException(NoSuchElementException e) {
+        return e.getMessage();
     }
 
     @ResponseBody
     @ExceptionHandler(ElementMeantToSaveExists.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleSavingAlreadyExistingElement(ElementMeantToSaveExists elementMeantToSaveExists) {
-        return new ResponseEntity<>(elementMeantToSaveExists.getMessage(), HttpStatus.BAD_REQUEST);
+    public String handleSavingAlreadyExistingElement(ElementMeantToSaveExists elementMeantToSaveExists) {
+        return elementMeantToSaveExists.getMessage();
     }
 }

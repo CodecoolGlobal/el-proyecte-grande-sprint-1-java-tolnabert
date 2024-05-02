@@ -121,7 +121,7 @@ public class Client {
         return "User{" +
                 "publicId=" + id +
                 ", publicId=" + publicId +
-                ", username='" + clientName + '\'' +
+                ", clientName='" + clientName + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
