@@ -31,7 +31,7 @@ public class Step {
     @Override
     public String toString() {
         return "Step{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", stepDescription='" + stepDescription + '\'' +
                 '}';
     }

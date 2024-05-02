@@ -41,7 +41,7 @@ public class Unit {
     @Override
     public String toString() {
         return "Unit{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", publicId=" + publicId +
                 ", unitName='" + unitName + '\'' +
                 '}';

@@ -9,12 +9,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-public class User {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private UUID publicId;
-    private String username;
+    private String clientName;
     private String password;
     private String firstName;
     private String lastName;
@@ -22,9 +22,9 @@ public class User {
     // TODO:look up "email annotation"
     @Email
     private String email;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "createdBy")
     private Set<Recipe> ownRecipes;
-    @ManyToMany(mappedBy = "user")
+    @ManyToMany(mappedBy = "favoredBy")
     private Set<Recipe> favoredRecipes;
     private LocalDate creationDate;
 
@@ -44,12 +44,12 @@ public class User {
         this.publicId = publicId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setClientName(String username) {
+        this.clientName = username;
     }
 
     public String getPassword() {
@@ -119,9 +119,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", publicId=" + publicId +
-                ", username='" + username + '\'' +
+                ", clientName='" + clientName + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

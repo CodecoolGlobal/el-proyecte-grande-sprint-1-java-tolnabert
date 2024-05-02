@@ -1,83 +1,120 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
+import com.codecool.chilibeans.model.Client;
+import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.model.recipe.Recipe;
+import com.codecool.chilibeans.repository.ClientRepository;
+import com.codecool.chilibeans.repository.recipe.RecipeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
 
-    private final Set<Recipe> recipes = new HashSet<>();
+    private final RecipeRepository recipeRepository;
+    private final ClientRepository clientRepository;
 
-    public List<RecipeDTO> getAll(String sortBy, String sorOrder) {
-        List<RecipeDTO> recipeDTOs = new LinkedList<>();
-        for (Recipe recipe : recipes) {
-            recipeDTOs.add(new RecipeDTO(recipe.id(), recipe.name(),
-                    recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt()));
+    @Autowired
+    public RecipeService(RecipeRepository recipeRepository, ClientRepository clientRepository) {
+        this.recipeRepository = recipeRepository;
+        this.clientRepository = clientRepository;
+    }
+
+    public Set<RecipeDTO> getAll(String sortBy, String sortOrder) {
+        Sort.Direction sortDirection;
+
+        if (sortOrder.equals("asc")) {
+            sortDirection = Sort.Direction.ASC;
+
+        } else if (sortOrder.equals("desc")) {
+            sortDirection = Sort.Direction.DESC;
+
+        } else {
+            throw new IllegalArgumentException("Sort Order \"" + sortOrder + "\" is not a valid option.");
         }
 
+        Sort sort = Sort.by(sortDirection, sortBy);
 
-        return sort(recipeDTOs, sortBy, sorOrder);
+        return recipeRepository.findAll(sort).stream().map(RecipeService::convertToRecipeDTO).collect(Collectors.toSet());
     }
 
-    private List<RecipeDTO> sort(List<RecipeDTO> recipes, String sortBy, String sortOrder) {
-        Comparator<RecipeDTO> comparator = Comparator.comparing(RecipeDTO::name);
+    public RecipeDTO getByPublicId(UUID publicId) {
 
-        if ("createdAt".equalsIgnoreCase(sortBy)) {
-            comparator = Comparator.comparing(RecipeDTO::createdAt);
+        Recipe recipe = recipeRepository.findByPublicId(publicId).orElseThrow(NoSuchElementException::new);
+        return convertToRecipeDTO(recipe);
+
+    }
+
+    private static RecipeDTO convertToRecipeDTO(Recipe recipe) {
+        return new RecipeDTO(
+                recipe.getPublicId(),
+                recipe.getName(),
+                recipe.getDescription(),
+                convertToDietDTO(recipe.getDiets()),
+                recipe.getIngredients(),
+                recipe.getSteps(),
+                recipe.getPortions(),
+                recipe.getImage(),
+                recipe.getCreatedBy().getPublicId(),
+                recipe.getCreatedAt());
+    }
+
+    private static Set<DietDTO> convertToDietDTO(Set<Diet> diets) {
+        return diets.stream().map(diet -> new DietDTO(diet.getPublicId(), diet.getName())).collect(Collectors.toSet());
+    }
+
+    public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
+        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name()); //TODO: Is the name really unique? Decide what makes a recipe unique
+        if (optionalRecipe.isEmpty()) {
+            Client creator = clientRepository.findByPublicId(newRecipeDTO.createdBy()).orElseThrow( () -> new NoSuchElementException("User not found.")
+            );
+
+            Recipe recipe = new Recipe();
+            setRecipeBasedDTO(newRecipeDTO, recipe, creator);
+            return convertToRecipeDTO(recipe);
         }
-
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            comparator = comparator.reversed();
-        }
-
-        return recipes.stream().sorted(comparator).toList();
+        throw new ElementMeantToSaveExists(newRecipeDTO);
     }
 
-    public RecipeDTO getById(UUID id) {
-        Recipe recipe = recipes.stream().filter(r -> r.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
-
-        return new RecipeDTO(recipe.id(), recipe.name(),
-                recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt());
+    private void setRecipeBasedDTO(NewRecipeDTO newRecipeDTO, Recipe recipe, Client creator) {
+        recipe.setPublicId(UUID.randomUUID());
+        recipe.setName(newRecipeDTO.name());
+        recipe.setDescription(newRecipeDTO.description());
+        recipe.setDiets(newRecipeDTO.diets());
+        recipe.setIngredients(newRecipeDTO.ingredients());
+        recipe.setSteps(newRecipeDTO.steps());
+        recipe.setPortions(newRecipeDTO.portions());
+        recipe.setImage(newRecipeDTO.image());
+        recipe.setCreatedBy(creator);
+        recipe.setCreatedAt(LocalDate.now());
+        recipeRepository.save(recipe);
     }
 
-    public RecipeDTO create(NewRecipeDTO newRecipeDTO) {
-        Recipe newRecipe = new Recipe(0, UUID.randomUUID(), newRecipeDTO.name(), newRecipeDTO.description(), newRecipeDTO.diets(), newRecipeDTO.ingredients(), newRecipeDTO.steps(), newRecipeDTO.portions(), newRecipeDTO.image(), newRecipeDTO.createdBy(), LocalDate.now());
-        recipes.add(newRecipe);
 
-        return new RecipeDTO(newRecipe.id(), newRecipe.name(), newRecipe.description(), newRecipe.diets(), newRecipe.ingredients(), newRecipe.steps(), newRecipe.portions(), newRecipe.image(), newRecipe.createdBy(), newRecipe.createdAt());
+    public RecipeDTO updateByPublicId(RecipeDTO recipeDTO) {
+
+        Recipe recipe = recipeRepository.findByPublicId(recipeDTO.publicId()).orElseThrow(NoSuchElementException::new);
+        //TODO: update it ... save
+        return convertToRecipeDTO(recipe);
+
+
     }
 
-    public RecipeDTO updateById(UUID id, RecipeDTO recipeDTO) {
-        Recipe recipeToUpdate = recipes.stream()
-                .filter(recipe -> recipe.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
-
-        Recipe updatedRecipe = new Recipe(recipeToUpdate.dataBaseId(), recipeDTO.id(), recipeDTO.name(), recipeDTO.description(), recipeDTO.diets(), recipeDTO.ingredients(), recipeDTO.steps(), recipeDTO.portions(), recipeDTO.image(), recipeDTO.createdBy(), recipeDTO.createdAt());
-        recipes.remove(recipeToUpdate);
-        recipes.add(updatedRecipe);
-
-        return recipeDTO;
+    public boolean deleteByPublicId(UUID publicId) {
+        return recipeRepository.deleteByPublicId(publicId); //TODO: unsuccessful deletion sould throw execption
     }
 
-    public boolean deleteById(UUID id) {
-        Recipe recipeToDelete = recipes.stream()
-                .filter(recipe -> recipe.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
-
-        return recipes.remove(recipeToDelete);
-    }
 }

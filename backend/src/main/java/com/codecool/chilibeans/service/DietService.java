@@ -2,56 +2,59 @@ package com.codecool.chilibeans.service;
 
 import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
 import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.recipe.Diet;
+import com.codecool.chilibeans.repository.recipe.DietRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DietService {
 
-    private final Set<Diet> diets = new HashSet<>();
+    private final DietRepository dietRepository;
+
+    @Autowired
+    public DietService(DietRepository dietRepository) {
+        this.dietRepository = dietRepository;
+    }
 
     public Set<DietDTO> getAll() {
-        Set<DietDTO> dietDTOs = new HashSet<>();
-        for (Diet diet : diets) {
-            dietDTOs.add(new DietDTO(diet.id(), diet.name()));
+        List<Diet> diets = dietRepository.findAll();
+        return diets.stream().map(diet -> new DietDTO(diet.getPublicId(), diet.getName())).collect(Collectors.toSet());
+    }
+
+    public DietDTO getByPublicId(UUID publicId) {
+        Diet diet = dietRepository.findByPublicId(publicId).orElseThrow(NoSuchElementException::new);
+        return new DietDTO(diet.getPublicId(), diet.getName());
+    }
+
+    public DietDTO save(NewDietDTO newDietDTO) {
+        Optional<Diet> optionalDiet = dietRepository.findByNameIgnoreCase(newDietDTO.name());
+        if (optionalDiet.isEmpty()) {
+            Diet newDiet = new Diet();
+            newDiet.setName(newDietDTO.name());
+            newDiet.setPublicId(UUID.randomUUID());
+            dietRepository.save(newDiet);
+            return new DietDTO(newDiet.getPublicId(), newDiet.getName());
         }
-        return dietDTOs;
+        throw new ElementMeantToSaveExists(newDietDTO);
     }
 
-    public DietDTO getById(UUID id) {
-        Diet diet = diets.stream()
-                .filter(diet1 -> diet1.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Diet not found with ID: " + id));
+    public DietDTO updateByPublicId(DietDTO dietDTO) {
+        Optional<Diet> optionalDiet = dietRepository.findByPublicId(dietDTO.publicId());
+        if (optionalDiet.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        Diet diet = optionalDiet.get();
+        diet.setName(dietDTO.name());
 
-        return new DietDTO(diet.id(), diet.name());
+        return new DietDTO(diet.getPublicId(), diet.getName());
     }
 
-    public DietDTO create(NewDietDTO newDietDTO) {
-        Diet newDiet = new Diet(0, UUID.randomUUID(), newDietDTO.name());
-        diets.add(newDiet);
-
-        return new DietDTO(newDiet.id(), newDiet.name());
-    }
-
-    public DietDTO updateById(UUID id, DietDTO dietDTO) {
-        Diet dietToUpdate = diets.stream().filter(diet -> diet.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Diet not found with ID: " + id));
-
-        Diet updatedDiet = new Diet(0, dietToUpdate.id(), dietDTO.name());
-        diets.add(updatedDiet);
-        diets.remove(dietToUpdate);
-
-        return dietDTO;
-    }
-
-    public boolean deleteById(UUID id) {
-        return diets.removeIf(diet -> diet.id().equals(id));
+    public boolean deleteByPublicId(UUID publicId) {
+        return dietRepository.deleteByPublicId(publicId);
     }
 }
