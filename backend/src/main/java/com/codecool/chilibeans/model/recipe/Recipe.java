@@ -1,6 +1,7 @@
 package com.codecool.chilibeans.model.recipe;
 
 import com.codecool.chilibeans.model.Client;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -29,9 +30,10 @@ public class Recipe {
     private String image;
     private LocalDate createdAt;
     @ManyToOne
+    @JsonBackReference
     private Client createdBy;
     @ManyToMany
-    private Set<Client> favoredBy;
+    private Set<Client> favoredBy; //TODO: This fields type should be ClientId
 
     public Long getId() {
         return id;
