@@ -1,7 +1,6 @@
 package com.codecool.chilibeans.repository.recipe;
 
 import com.codecool.chilibeans.model.recipe.Recipe;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
