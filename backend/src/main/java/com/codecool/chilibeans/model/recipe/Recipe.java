@@ -132,7 +132,7 @@ public class Recipe {
     @Override
     public String toString() {
         return "Recipe{" +
-                "id=" + id +
+                "publicId=" + id +
                 ", publicId=" + publicId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

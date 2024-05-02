@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +47,7 @@ public class RecipeService {
                recipe.getSteps(),
                recipe.getPortions(),
                recipe.getImage(),
-               recipe.getCreatedBy().getPublicId(),
+               recipe.getCreatedBy(),
                recipe.getCreatedAt()
        )).collect(Collectors.toSet());
     }
@@ -67,41 +66,56 @@ public class RecipeService {
         return recipes.stream().sorted(comparator).toList();
     }
 
-    public RecipeDTO getById(UUID id) {
-        Recipe recipe = recipes.stream().filter(r -> r.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
+    public RecipeDTO getById(UUID publicId) {
+        Recipe recipe = recipeRepository.findByPublicId(publicId).orElseThrow(NoSuchElementException::new);
 
-        return new RecipeDTO(recipe.id(), recipe.name(),
-                recipe.description(), recipe.diets(), recipe.ingredients(), recipe.steps(), recipe.portions(), recipe.image(), recipe.createdBy(), recipe.createdAt());
+        return new RecipeDTO(recipe.getPublicId(), recipe.getName(),
+                recipe.getDescription(), recipe.getDiets(), recipe.getIngredients(), recipe.getSteps(), recipe.getPortions(), recipe.getImage(), recipe.getCreatedBy(), recipe.getCreatedAt());
     }
 
-    public RecipeDTO create(NewRecipeDTO newRecipeDTO) {
-        Recipe newRecipe = new Recipe(0, UUID.randomUUID(), newRecipeDTO.name(), newRecipeDTO.description(), newRecipeDTO.diets(), newRecipeDTO.ingredients(), newRecipeDTO.steps(), newRecipeDTO.portions(), newRecipeDTO.image(), newRecipeDTO.createdBy(), LocalDate.now());
-        recipes.add(newRecipe);
+    public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
+        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name());
+        if(optionalRecipe.isEmpty()){
+            Recipe newRecipe = new Recipe();
+            newRecipe.setPublicId(UUID.randomUUID());
+            newRecipe.setName(newRecipeDTO.name());
+            newRecipe.setDescription(newRecipeDTO.description());
+            newRecipe.setDiets(newRecipeDTO.diets());
+            newRecipe.setIngredients(newRecipeDTO.ingredients());
+            newRecipe.setSteps(newRecipeDTO.steps());
+            newRecipe.setPortions(newRecipeDTO.portions());
+            newRecipe.setImage(newRecipeDTO.image());
+            newRecipe.setCreatedBy(newRecipeDTO.createdBy());
+            newRecipe.setCreatedAt(LocalDate.now());
+            recipeRepository.save(newRecipe);
+            return new RecipeDTO(newRecipe.getPublicId(), newRecipe.getName(), newRecipe.getDescription(), newRecipe.getDiets(), newRecipe.getIngredients(), newRecipe.getSteps(), newRecipe.getPortions(), newRecipe.getImage(), newRecipe.getCreatedBy(), newRecipe.getCreatedAt());
+        }
+        Recipe recipe = optionalRecipe.get();
 
-        return new RecipeDTO(newRecipe.id(), newRecipe.name(), newRecipe.description(), newRecipe.diets(), newRecipe.ingredients(), newRecipe.steps(), newRecipe.portions(), newRecipe.image(), newRecipe.createdBy(), newRecipe.createdAt());
+        return new RecipeDTO(recipe.getPublicId(), recipe.getName(), recipe.getDescription(), recipe.getDiets(), recipe.getIngredients(), recipe.getSteps(), recipe.getPortions(), recipe.getImage(), recipe.getCreatedBy(), recipe.getCreatedAt());
     }
 
-    public RecipeDTO updateById(UUID id, RecipeDTO recipeDTO) {
-        Recipe recipeToUpdate = recipes.stream()
-                .filter(recipe -> recipe.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
+    public RecipeDTO updateByPublicId(RecipeDTO recipeDTO) {
+        Optional<Recipe> optionalRecipe = recipeRepository.findByPublicId(recipeDTO.publicId());
+        if(optionalRecipe.isEmpty()){
+            throw new NoSuchElementException();
+        }
+        Recipe recipe = optionalRecipe.get();
+        recipe.setName(recipeDTO.name());
+        recipe.setDescription(recipeDTO.description());
+        recipe.setDiets(recipeDTO.diets());
+        recipe.setIngredients(recipeDTO.ingredients());
+        recipe.setSteps(recipeDTO.steps());
+        recipe.setPortions(recipeDTO.portions());
+        recipe.setImage(recipeDTO.image());
+        recipe.setCreatedBy(recipeDTO.createdBy());
+        recipe.setCreatedAt(LocalDate.now());
+        recipeRepository.save(recipe);
 
-        Recipe updatedRecipe = new Recipe(recipeToUpdate.dataBaseId(), recipeDTO.id(), recipeDTO.name(), recipeDTO.description(), recipeDTO.diets(), recipeDTO.ingredients(), recipeDTO.steps(), recipeDTO.portions(), recipeDTO.image(), recipeDTO.createdBy(), recipeDTO.createdAt());
-        recipes.remove(recipeToUpdate);
-        recipes.add(updatedRecipe);
-
-        return recipeDTO;
+        return new RecipeDTO(recipe.getPublicId(), recipe.getName(), recipe.getDescription(), recipe.getDiets(), recipe.getIngredients(), recipe.getSteps(), recipe.getPortions(), recipe.getImage(), recipe.getCreatedBy(), recipe.getCreatedAt());
     }
 
-    public boolean deleteById(UUID id) {
-        Recipe recipeToDelete = recipes.stream()
-                .filter(recipe -> recipe.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Recipe not found with ID: " + id));
-
-        return recipes.remove(recipeToDelete);
+    public boolean deleteByPublicId(UUID publicId) {
+        return recipeRepository.deleteByPublicId(publicId);
     }
 }

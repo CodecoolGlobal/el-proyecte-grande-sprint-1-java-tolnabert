@@ -6,7 +6,6 @@ import com.codecool.chilibeans.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,17 +33,17 @@ public class RecipeController {
 
     @PostMapping("")
     public RecipeDTO create(@RequestBody NewRecipeDTO newRecipeDTO) {
-        return recipeService.create(newRecipeDTO);
+        return recipeService.save(newRecipeDTO);
     }
 
     @PatchMapping("/{id}")
     public RecipeDTO updateById(@PathVariable UUID id, @RequestBody RecipeDTO recipeDTO) {
-        return recipeService.updateById(id, recipeDTO);
+        return recipeService.updateByPublicId(recipeDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable UUID id) {
-        return recipeService.deleteById(id);
+        return recipeService.deleteByPublicId(id);
     }
 
 }

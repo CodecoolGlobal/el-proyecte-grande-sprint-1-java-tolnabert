@@ -25,21 +25,21 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDTO getById(@PathVariable("id") UUID uuid) {
-        return userService.getById(uuid);
+        return userService.getByPublicId(uuid);
     }
 
     @PostMapping("")
     public UserDTO create(@RequestBody NewUserDTO newUserDTO) {
-        return userService.create(newUserDTO);
+        return userService.save(newUserDTO);
     }
 
     @PatchMapping("/{id}")
     public UserDTO updateById(@PathVariable("id") UUID uuid, @RequestBody UserDTO userDTO) {
-        return userService.updateById(uuid, userDTO);
+        return userService.updateByPublicId(userDTO);
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable("id") UUID uuid) {
-        return userService.deleteById(uuid);
+        return userService.deleteByPublicId(uuid);
     }
 }

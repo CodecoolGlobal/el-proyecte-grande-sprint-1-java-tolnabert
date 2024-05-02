@@ -51,7 +51,7 @@ public class DietService {
         Diet diet = optionalDiet.get();
         diet.setName(dietDTO.name());
 
-        return dietDTO;
+        return dietDTO; //TODO
     }
 
     public boolean deleteByPublicId(UUID publicId) {
