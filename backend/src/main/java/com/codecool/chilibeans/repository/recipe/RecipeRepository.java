@@ -11,9 +11,12 @@ import java.util.UUID;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    List<Recipe> findAll( Sort sort);
+    List<Recipe> findAll(Sort sort);
+
     Optional<Recipe> findByPublicId(UUID publicId);
+
     Optional<Recipe> findByNameIgnoreCase(String name);
+
     boolean deleteByPublicId(UUID publicId);
 
 }

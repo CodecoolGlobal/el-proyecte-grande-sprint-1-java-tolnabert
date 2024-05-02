@@ -1,6 +1,7 @@
 package com.codecool.chilibeans.model;
 
 import com.codecool.chilibeans.model.recipe.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@JsonIgnoreProperties("ownRecipes")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
