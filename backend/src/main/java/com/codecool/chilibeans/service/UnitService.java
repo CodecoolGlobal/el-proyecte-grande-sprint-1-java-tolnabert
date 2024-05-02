@@ -2,6 +2,7 @@ package com.codecool.chilibeans.service;
 
 import com.codecool.chilibeans.controller.dto.unit.NewUnitDTO;
 import com.codecool.chilibeans.controller.dto.unit.UnitDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.recipe.Unit;
 import com.codecool.chilibeans.repository.recipe.UnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,7 @@ public class UnitService {
             unitRepository.save(newUnit);
             return new UnitDTO(newUnit.getPublicId(), newUnit.getUnitName());
         }
-        Unit unit = optionalUnit.get();
-        return new UnitDTO(unit.getPublicId(), unit.getUnitName());
+        throw new ElementMeantToSaveExists(newUnitDTO);
     }
 
     public UnitDTO updateById(UnitDTO unitDTO) {
