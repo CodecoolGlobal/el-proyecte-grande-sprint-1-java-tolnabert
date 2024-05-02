@@ -39,8 +39,7 @@ public class DietService {
             dietRepository.save(newDiet);
             return new DietDTO(newDiet.getPublicId(), newDiet.getName());
         }
-        Diet diet = optionalDiet.get();
-        return new DietDTO(diet.getPublicId(), diet.getName());
+        throw new ElementMeantToSaveExists(newDietDTO);
     }
 
     public DietDTO updateByPublicId(DietDTO dietDTO) {
