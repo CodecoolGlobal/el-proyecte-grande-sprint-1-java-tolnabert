@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import FormRow from "../components/FormRow";
 import { Diet } from "../utils/types";
+import { Unit} from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import AddDiet from "../components/AddDiet.tsx";
+import AddUnit from "../components/AddUnit.tsx";
 
 function CreateRecipe() {
   const [createForm, setCreateForm] = useState({
@@ -10,6 +12,7 @@ function CreateRecipe() {
     description: "",
     diets: [] as Diet[],
     ingredients: "",
+    units: [] as Unit[],
     steps: "",
     portions: 0,
     image: "",
@@ -72,6 +75,7 @@ function CreateRecipe() {
         description: "",
         diets: [],
         ingredients: "",
+        units: [],
         steps: "",
         portions: 0,
         image: "",
@@ -98,6 +102,13 @@ function CreateRecipe() {
     setCreateForm((prevForm) => ({
       ...prevForm,
       diets: [...prevForm.diets, { name: dietName, isChecked: false }],
+    }));
+  };
+
+  const handleAddUnit = (unitName: string) => {
+    setCreateForm((prevForm) => ({
+      ...prevForm,
+      units: [...prevForm.units, { name: unitName }],
     }));
   };
 
@@ -177,6 +188,7 @@ function CreateRecipe() {
         </form>
         <p>Add new diet</p>
         <AddDiet addDiet={handleAddDiet}/>
+        <AddUnit addUnit={handleAddUnit}/>
       </>
   );
 }
