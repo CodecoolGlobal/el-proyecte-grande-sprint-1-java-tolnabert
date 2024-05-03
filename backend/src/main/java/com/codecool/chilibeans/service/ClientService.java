@@ -24,39 +24,25 @@ public class ClientService {
     public Set<ClientDTO> getAll() {
         List<Client> clients = clientRepository.findAll();
 
-        return clients.stream().map(user -> new ClientDTO(user.getPublicId(), user.getClientName(), user.getFirstName(), user.getLastName(), user.getDateOfBirth(), user.getEmail(), user.getOwnRecipes(), user.getFavoredRecipes(), user.getCreationDate())).collect(Collectors.toSet());
+        return clients.stream().map(ClientService::convertToClientDTO).collect(Collectors.toSet());
     }
 
     public ClientDTO getByPublicId(UUID publicId) {
         Client client = clientRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + publicId));
 
-        return new ClientDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
-                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
+        return convertToClientDTO(client);
+    }
+
+    public boolean existsByClientNameOrEmail(NewClientDTO newClientDTO){
+        return clientRepository.existsByClientNameOrEmail(newClientDTO.clientName(), newClientDTO.email());
     }
 
     public ClientDTO save(NewClientDTO newClientDTO) {
-        Optional<Client> optionalUser = clientRepository.findByClientNameIgnoreCase(newClientDTO.clientName());
-        if(optionalUser.isEmpty()){
-            //TODO lehet nem nev alapjan kene itt keresni
-            Client newClient = new Client();
-            newClient.setPublicId(UUID.randomUUID());
-            newClient.setClientName(newClientDTO.clientName());
-            newClient.setPassword(newClientDTO.password());
-            newClient.setFirstName(newClientDTO.firstName());
-            newClient.setLastName(newClientDTO.lastName());
-            newClient.setDateOfBirth(newClientDTO.dateOfBirth());
-            newClient.setEmail(newClientDTO.email());
-            newClient.setOwnRecipes(new HashSet<>());
-            newClient.setFavoredRecipes(new HashSet<>());
-            newClient.setCreationDate(LocalDate.now());
-            clientRepository.save(newClient);
-            return new ClientDTO(newClient.getPublicId(), newClient.getClientName(), newClient.getFirstName(), newClient.getLastName(), newClient.getDateOfBirth(),
-                    newClient.getEmail(), newClient.getOwnRecipes(), newClient.getFavoredRecipes(), newClient.getCreationDate());
-        }
-        Client client = optionalUser.get();
-        return new ClientDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
-                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
+        //TODO lehet nem nev alapjan kene itt keresni
+        Client newClient = new Client();
+        setAndSaveClientByDTO(newClientDTO, newClient);
+        return convertToClientDTO(newClient);
     }
 
     public ClientDTO updateByPublicId(ClientDTO clientDTO) {
@@ -78,11 +64,38 @@ public class ClientService {
         client.setCreationDate(LocalDate.now());
         clientRepository.save(client);
 
-        return new ClientDTO(client.getPublicId(), client.getClientName(), client.getFirstName(), client.getLastName(), client.getDateOfBirth(),
-                client.getEmail(), client.getOwnRecipes(), client.getFavoredRecipes(), client.getCreationDate());
+        return convertToClientDTO(client);
     }
 
     public boolean deleteByPublicId(UUID publicId) {
         return clientRepository.deleteByPublicId(publicId);
     }
+
+    private void setAndSaveClientByDTO(NewClientDTO newClientDTO, Client newClient){
+        newClient.setPublicId(UUID.randomUUID());
+        newClient.setClientName(newClientDTO.clientName());
+        newClient.setPassword(newClientDTO.password());
+        newClient.setFirstName(newClientDTO.firstName());
+        newClient.setLastName(newClientDTO.lastName());
+        newClient.setDateOfBirth(newClientDTO.dateOfBirth());
+        newClient.setEmail(newClientDTO.email());
+        newClient.setOwnRecipes(new HashSet<>());
+        newClient.setFavoredRecipes(new HashSet<>());
+        newClient.setCreationDate(LocalDate.now());
+        clientRepository.save(newClient);
+    }
+
+    private static ClientDTO convertToClientDTO(Client client){
+        return new ClientDTO(
+                client.getPublicId(),
+                client.getClientName(),
+                client.getFirstName(),
+                client.getLastName(),
+                client.getDateOfBirth(),
+                client.getEmail(),
+                client.getOwnRecipes(),
+                client.getFavoredRecipes(),
+                client.getCreationDate());
+    }
 }
+

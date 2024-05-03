@@ -77,7 +77,7 @@ public class RecipeService {
     }
 
     public RecipeDTO save(NewRecipeDTO newRecipeDTO) {
-        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCase(newRecipeDTO.name()); //TODO: Is the name really unique? Decide what makes a recipe unique
+        Optional<Recipe> optionalRecipe = recipeRepository.findByNameIgnoreCaseAndDescriptionIgnoreCase(newRecipeDTO.name(), newRecipeDTO.description()); //TODO: Is the name really unique? Decide what makes a recipe unique
         if (optionalRecipe.isEmpty()) {
             Client creator = clientRepository.findByPublicId(newRecipeDTO.createdBy()).orElseThrow( () -> new NoSuchElementException("User not found.")
             );
@@ -114,7 +114,7 @@ public class RecipeService {
     }
 
     public boolean deleteByPublicId(UUID publicId) {
-        return recipeRepository.deleteByPublicId(publicId); //TODO: unsuccessful deletion sould throw execption
+        return recipeRepository.deleteByPublicId(publicId); //TODO: unsuccessful deletion should throw exception
     }
 
 }

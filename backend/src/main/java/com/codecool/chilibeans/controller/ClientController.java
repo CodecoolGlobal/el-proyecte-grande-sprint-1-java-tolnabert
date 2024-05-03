@@ -2,6 +2,7 @@ package com.codecool.chilibeans.controller;
 
 import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
 import com.codecool.chilibeans.controller.dto.client.ClientDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.service.ClientService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,10 @@ public class ClientController {
 
     @PostMapping
     public ClientDTO create(@RequestBody NewClientDTO newClientDTO) {
+        boolean exists = clientService.existsByClientNameOrEmail(newClientDTO);
+        if (exists){
+            throw new ElementMeantToSaveExists(newClientDTO);
+        }
         return clientService.save(newClientDTO);
     }
 
