@@ -26,3 +26,7 @@ export type Diet = {
   name: string;
   isChecked: boolean;
 }
+
+export type Unit = {
+  name: string;
+}
