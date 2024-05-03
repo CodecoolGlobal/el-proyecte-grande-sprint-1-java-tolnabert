@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findAll( Sort sort);
     Optional<Recipe> findByPublicId(UUID publicId);
-    Optional<Recipe> findByNameIgnoreCase(String name);
+    Optional<Recipe> findByNameIgnoreCaseAndDescriptionIgnoreCase(String name, String Description);
     boolean deleteByPublicId(UUID publicId);
 
 }

@@ -3,6 +3,7 @@ package com.codecool.chilibeans.model;
 import com.codecool.chilibeans.model.recipe.Recipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,6 +15,8 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private UUID publicId;
+    @Size(min = 1, max = 50)
+    @Column(length = 50, unique = true, nullable = false)
     private String clientName;
     private String password;
     private String firstName;
