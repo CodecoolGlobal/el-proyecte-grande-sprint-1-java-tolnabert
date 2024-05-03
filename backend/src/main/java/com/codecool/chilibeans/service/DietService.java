@@ -27,7 +27,7 @@ public class DietService {
     }
 
     public DietDTO getByPublicId(UUID publicId) {
-        Diet diet = dietRepository.findByPublicId(publicId).orElseThrow(NoSuchElementException::new);
+        Diet diet = dietRepository.findByPublicId(publicId).orElseThrow(() -> new NoSuchElementException("Diet with id: " + publicId + " not exists."));
         return new DietDTO(diet.getPublicId(), diet.getName());
     }
 
@@ -46,7 +46,7 @@ public class DietService {
     public DietDTO updateByPublicId(DietDTO dietDTO) {
         Optional<Diet> optionalDiet = dietRepository.findByPublicId(dietDTO.publicId());
         if (optionalDiet.isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Diet with id: " + dietDTO.publicId() + " not exists.");
         }
         Diet diet = optionalDiet.get();
         diet.setName(dietDTO.name());
