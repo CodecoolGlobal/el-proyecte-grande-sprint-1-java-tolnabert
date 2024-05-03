@@ -31,10 +31,7 @@ public class ClientController {
 
     @PostMapping
     public ClientDTO create(@RequestBody NewClientDTO newClientDTO) {
-        boolean exists = clientService.existsByClientNameOrEmail(newClientDTO);
-        if (exists){
-            throw new ElementMeantToSaveExists(newClientDTO);
-        }
+
         return clientService.save(newClientDTO);
     }
 
