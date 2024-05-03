@@ -1,6 +1,8 @@
 package com.codecool.chilibeans.model;
 
 import com.codecool.chilibeans.model.recipe.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -22,10 +24,10 @@ public class Client {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-    // TODO:look up "email annotation"
     @Email
     private String email;
     @OneToMany(mappedBy = "createdBy")
+    @JsonManagedReference
     private Set<Recipe> ownRecipes;
     @ManyToMany(mappedBy = "favoredBy")
     private Set<Recipe> favoredRecipes;
