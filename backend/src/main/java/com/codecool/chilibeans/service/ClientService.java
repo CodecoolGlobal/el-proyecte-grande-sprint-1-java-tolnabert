@@ -2,6 +2,7 @@ package com.codecool.chilibeans.service;
 
 import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
 import com.codecool.chilibeans.controller.dto.client.ClientDTO;
+import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.Client;
 import com.codecool.chilibeans.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,17 @@ public class ClientService {
         return convertToClientDTO(client);
     }
 
-    public boolean existsByClientNameOrEmail(NewClientDTO newClientDTO){
+    private boolean existsByClientNameOrEmail(NewClientDTO newClientDTO){
         return clientRepository.existsByClientNameOrEmail(newClientDTO.clientName(), newClientDTO.email());
     }
 
     public ClientDTO save(NewClientDTO newClientDTO) {
-        //TODO lehet nem nev alapjan kene itt keresni
+        boolean exists = existsByClientNameOrEmail(newClientDTO);
+        if (exists){
+            throw new ElementMeantToSaveExists(newClientDTO);
+        }
+        //TODO consider registration form
+
         Client newClient = new Client();
         setAndSaveClientByDTO(newClientDTO, newClient);
         return convertToClientDTO(newClient);
