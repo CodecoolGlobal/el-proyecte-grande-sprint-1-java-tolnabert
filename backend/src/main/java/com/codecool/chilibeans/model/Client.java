@@ -1,13 +1,13 @@
 package com.codecool.chilibeans.model;
 
 import com.codecool.chilibeans.model.recipe.Recipe;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class Client {
     private UUID publicId;
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String clientName;
+    private String username;
     private String password;
     private String firstName;
     private String lastName;
@@ -32,6 +32,11 @@ public class Client {
     @ManyToMany(mappedBy = "favoredBy")
     private Set<Recipe> favoredRecipes;
     private LocalDate creationDate;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "client_roles", joinColumns = @JoinColumn(name = "client_id"))
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -49,12 +54,12 @@ public class Client {
         this.publicId = publicId;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setClientName(String username) {
-        this.clientName = username;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -121,12 +126,20 @@ public class Client {
         this.creationDate = creationDate;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "publicId=" + id +
                 ", publicId=" + publicId +
-                ", clientName='" + clientName + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
