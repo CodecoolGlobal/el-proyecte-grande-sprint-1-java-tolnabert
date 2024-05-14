@@ -1,8 +1,12 @@
 import { useState } from "react";
 import FormRow from "../components/FormRow";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
+
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -12,14 +16,6 @@ function Register() {
     password: "",
     passwordConfirmation: "",
   });
-
-  console.log(formData.firstName);
-  console.log(formData.lastName);
-  console.log(formData.dateOfBirth);
-  console.log(formData.email);
-  console.log(formData.username);
-  console.log(formData.password);
-  console.log(formData.passwordConfirmation);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -38,18 +34,34 @@ function Register() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (formData.password !== formData.passwordConfirmation) {
+      setMessage("Passwords do not match");
+      return;
+    }
     console.log("form data: ", formData);
-
+    setLoading(true);
+    setMessage("");
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/clients/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
+
+      if (response.ok) {
+        setMessage("Registration successful! You can now login.");
+
+        navigate("/login");
+      } else {
+        const data = await response.json();
+        setMessage(data.message || "Failed to register");
+      }
     } catch (error) {
       console.error("Error during registration:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,8 +124,10 @@ function Register() {
           onChange={handleChange}
           required
         />
-
-        <button type='submit'>register</button>
+        <button type='submit' disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </button>{" "}
+        {message && <p>{message}</p>}
       </form>
       <p>
         Already a member? <Link to='/login'>Login</Link>

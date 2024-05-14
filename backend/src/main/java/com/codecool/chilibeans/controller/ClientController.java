@@ -1,8 +1,9 @@
 package com.codecool.chilibeans.controller;
 
+import com.codecool.chilibeans.controller.dto.client.JwtResponse;
+import com.codecool.chilibeans.controller.dto.client.LoginRequest;
 import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
 import com.codecool.chilibeans.controller.dto.client.ClientDTO;
-import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.service.ClientService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,16 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    @PostMapping("/auth/register")
+    public void createUser(@RequestBody NewClientDTO registrationRequest) {
+        clientService.registerClient(registrationRequest);
+    }
+
+    @PostMapping("/auth/login")
+    public JwtResponse authenticateUser(@RequestBody LoginRequest loginRequest) {
+        return clientService.authenticateUser(loginRequest);
+    }
+
     @GetMapping
     public Set<ClientDTO> getAll() {
         return clientService.getAll();
@@ -27,12 +38,6 @@ public class ClientController {
     @GetMapping("/{id}")
     public ClientDTO getById(@PathVariable("id") UUID uuid) {
         return clientService.getByPublicId(uuid);
-    }
-
-    @PostMapping
-    public ClientDTO create(@RequestBody NewClientDTO newClientDTO) {
-
-        return clientService.save(newClientDTO);
     }
 
     @PatchMapping

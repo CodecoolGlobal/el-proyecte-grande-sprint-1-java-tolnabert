@@ -1,11 +1,21 @@
 package com.codecool.chilibeans.service;
 
+import com.codecool.chilibeans.controller.dto.client.JwtResponse;
+import com.codecool.chilibeans.controller.dto.client.LoginRequest;
 import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
 import com.codecool.chilibeans.controller.dto.client.ClientDTO;
 import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.Client;
+import com.codecool.chilibeans.model.Role;
 import com.codecool.chilibeans.repository.ClientRepository;
+import com.codecool.chilibeans.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,10 +26,16 @@ import java.util.stream.Collectors;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final PasswordEncoder encoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.clientRepository = clientRepository;
+        this.encoder = encoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     public Set<ClientDTO> getAll() {
@@ -35,63 +51,31 @@ public class ClientService {
         return convertToClientDTO(client);
     }
 
-    private boolean existsByClientNameOrEmail(NewClientDTO newClientDTO){
-        return clientRepository.existsByUsernameOrEmail(newClientDTO.username(), newClientDTO.email());
-    }
-
-    public ClientDTO save(NewClientDTO newClientDTO) {
-        boolean exists = existsByClientNameOrEmail(newClientDTO);
-        if (exists){
-            throw new ElementMeantToSaveExists(newClientDTO);
-        }
-        //TODO consider registration form
-
-        Client newClient = new Client();
-        setAndSaveClientByDTO(newClientDTO, newClient);
-        return convertToClientDTO(newClient);
+    public boolean deleteByPublicId(UUID publicId) {
+        return clientRepository.deleteByPublicId(publicId);
     }
 
     public ClientDTO updateByPublicId(ClientDTO clientDTO) {
+        //TODO consider different DTO for password change and recipes as well
         Optional<Client> optionalUser = clientRepository.findByPublicId(clientDTO.publicId());
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new NoSuchElementException();
         }
         Client client = optionalUser.get();
 
-        client.setPublicId(UUID.randomUUID());
         client.setUsername(clientDTO.username());
-        //TODO password?
         client.setFirstName(clientDTO.firstName());
         client.setLastName(clientDTO.lastName());
         client.setDateOfBirth(clientDTO.dateOfBirth());
         client.setEmail(clientDTO.email());
         client.setOwnRecipes(clientDTO.ownRecipes());
         client.setFavoredRecipes(clientDTO.favoredRecipes());
-        client.setCreationDate(LocalDate.now());
         clientRepository.save(client);
 
         return convertToClientDTO(client);
     }
 
-    public boolean deleteByPublicId(UUID publicId) {
-        return clientRepository.deleteByPublicId(publicId);
-    }
-
-    private void setAndSaveClientByDTO(NewClientDTO newClientDTO, Client newClient){
-        newClient.setPublicId(UUID.randomUUID());
-        newClient.setUsername(newClientDTO.username());
-        newClient.setPassword(newClientDTO.password());
-        newClient.setFirstName(newClientDTO.firstName());
-        newClient.setLastName(newClientDTO.lastName());
-        newClient.setDateOfBirth(newClientDTO.dateOfBirth());
-        newClient.setEmail(newClientDTO.email());
-        newClient.setOwnRecipes(new HashSet<>());
-        newClient.setFavoredRecipes(new HashSet<>());
-        newClient.setCreationDate(LocalDate.now());
-        clientRepository.save(newClient);
-    }
-
-    private static ClientDTO convertToClientDTO(Client client){
+    private static ClientDTO convertToClientDTO(Client client) {
         return new ClientDTO(
                 client.getPublicId(),
                 client.getUsername(),
@@ -102,6 +86,41 @@ public class ClientService {
                 client.getOwnRecipes(),
                 client.getFavoredRecipes(),
                 client.getCreationDate());
+    }
+
+    public void registerClient(NewClientDTO registrationRequest) {
+        if (clientRepository.existsByUsername(registrationRequest.username())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        if (clientRepository.existsByEmail(registrationRequest.email())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Client client = new Client();
+        client.setPublicId(UUID.randomUUID());
+        client.setUsername(registrationRequest.username());
+        client.setPassword(encoder.encode(registrationRequest.password()));
+        client.setFirstName(registrationRequest.firstName());
+        client.setLastName(registrationRequest.lastName());
+        client.setDateOfBirth(registrationRequest.dateOfBirth());
+        client.setEmail(registrationRequest.email());
+        client.setCreationDate(LocalDate.now());
+        client.setRoles(Set.of(Role.ROLE_USER));
+
+        clientRepository.save(client);
+    }
+
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
+
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        User userDetails = (User) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .toList();
+        return new JwtResponse(jwt, userDetails.getUsername(), roles);
     }
 }
 
