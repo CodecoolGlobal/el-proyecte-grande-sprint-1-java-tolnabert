@@ -36,7 +36,7 @@ public class ClientService {
     }
 
     private boolean existsByClientNameOrEmail(NewClientDTO newClientDTO){
-        return clientRepository.existsByClientNameOrEmail(newClientDTO.clientName(), newClientDTO.email());
+        return clientRepository.existsByUsernameOrEmail(newClientDTO.username(), newClientDTO.email());
     }
 
     public ClientDTO save(NewClientDTO newClientDTO) {
@@ -59,7 +59,7 @@ public class ClientService {
         Client client = optionalUser.get();
 
         client.setPublicId(UUID.randomUUID());
-        client.setClientName(clientDTO.username());
+        client.setUsername(clientDTO.username());
         //TODO password?
         client.setFirstName(clientDTO.firstName());
         client.setLastName(clientDTO.lastName());
@@ -79,7 +79,7 @@ public class ClientService {
 
     private void setAndSaveClientByDTO(NewClientDTO newClientDTO, Client newClient){
         newClient.setPublicId(UUID.randomUUID());
-        newClient.setClientName(newClientDTO.clientName());
+        newClient.setUsername(newClientDTO.username());
         newClient.setPassword(newClientDTO.password());
         newClient.setFirstName(newClientDTO.firstName());
         newClient.setLastName(newClientDTO.lastName());
@@ -94,7 +94,7 @@ public class ClientService {
     private static ClientDTO convertToClientDTO(Client client){
         return new ClientDTO(
                 client.getPublicId(),
-                client.getClientName(),
+                client.getUsername(),
                 client.getFirstName(),
                 client.getLastName(),
                 client.getDateOfBirth(),

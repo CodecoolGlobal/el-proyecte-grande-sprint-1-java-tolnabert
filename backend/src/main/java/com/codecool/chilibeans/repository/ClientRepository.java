@@ -8,10 +8,10 @@ import java.util.UUID;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByPublicId(UUID publicId);
-    Optional<Client> findByClientNameIgnoreCase(String clientName);
+    Optional<Client> findByUsernameIgnoreCase(String username);
 
 
-    boolean existsByClientNameOrEmail(String clientName, String email);
+    boolean existsByUsernameOrEmail(String username, String email);
 
     boolean deleteByPublicId(UUID publicId);
 }
