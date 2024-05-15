@@ -22,6 +22,7 @@ export type Recipe = {
   createdAt: Date;
 };
 
+
 export type Diet = {
   name: string;
   isChecked: boolean;
@@ -29,4 +30,14 @@ export type Diet = {
 
 export type Unit = {
   name: string;
+}
+
+export type Step = {
+  step: string;
+}
+
+export interface Ingredient {
+  name: string;
+  unit: string;
+  portions: number;
 }

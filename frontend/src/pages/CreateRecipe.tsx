@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import FormRow from "../components/FormRow";
-import { Diet } from "../utils/types";
-import { Unit} from "../utils/types";
+import { Diet, Ingredient, Step } from "../utils/types";
+import { Unit } from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import AddDiet from "../components/AddDiet.tsx";
 import AddUnit from "../components/AddUnit.tsx";
+import AddIngredient from "../components/AddIngredient.tsx";
+import AddSteps from "../components/AddSteps.tsx";
+
 
 function CreateRecipe() {
   const [createForm, setCreateForm] = useState({
     name: "",
     description: "",
     diets: [] as Diet[],
-    ingredients: "",
+    ingredients: [] as Ingredient[],
     units: [] as Unit[],
-    steps: "",
+    steps: [] as Step[],
     portions: 0,
     image: "",
     createdBy: "",
@@ -21,6 +24,7 @@ function CreateRecipe() {
 
   useEffect(() => {
     getDiets();
+    getUnits();
   }, []);
 
   const getDiets = async () => {
@@ -39,6 +43,23 @@ function CreateRecipe() {
     }
   };
 
+  const getUnits = async () => {
+    try {
+      const response = await fetch("api/units");
+      if (!response.ok) {
+        throw new Error("Failed to fetch units");
+      }
+      const units: Unit[] = await response.json();
+      setCreateForm((prevForm) => ({
+        ...prevForm,
+        units: units,
+      }))
+    } catch (error) {
+      console.error("Error fetching units: ", error);
+    }
+  }
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name} = e.target;
     setCreateForm(prevForm => ({
@@ -52,6 +73,7 @@ function CreateRecipe() {
     e.preventDefault();
     try {
       const checkedDiets = createForm.diets.filter((diet) => diet.isChecked).map((diet) => diet.name);
+      console.log(checkedDiets)
       const recipeData = {
         ...createForm,
         diets: checkedDiets,
@@ -74,9 +96,9 @@ function CreateRecipe() {
         name: "",
         description: "",
         diets: [],
-        ingredients: "",
+        ingredients: [] as Ingredient[],
         units: [],
-        steps: "",
+        steps: [] as Step[],
         portions: 0,
         image: "",
         createdBy: "",
@@ -110,6 +132,36 @@ function CreateRecipe() {
       ...prevForm,
       units: [...prevForm.units, { name: unitName }],
     }));
+  };
+
+  const handleAddIngredient = (ingredient: Ingredient) => {
+    setCreateForm(prevForm => ({
+      ...prevForm,
+      ingredients: [...prevForm.ingredients, ingredient],
+    }));
+  };
+
+  const handleAddStep = (step: Step) => {
+    setCreateForm(prevForm => ({
+      ...prevForm,
+      steps: [...prevForm.steps, step],
+    }))
+  };
+
+  const transformIngredient = (ingredients: Ingredient[] ): string => {
+    if(!ingredients.length){
+      return "";
+    } else {
+      return ingredients.map((ingredient) => `${ingredient.name} - ${ingredient.portions} ${ingredient.unit}`).join(", ");
+    }
+  }
+
+  const transformStep = (steps: Step[]): string => {
+    if(!steps.length){
+      return "";
+    } else {
+      return steps.map((step, index) => `${index + 1}. ${step.step}`).join(", ");
+    }
   };
 
   return (
@@ -147,27 +199,22 @@ function CreateRecipe() {
             <label htmlFor="ingredients" className="ingredients-label">Ingredients</label>
             <textarea
               name="ingredients"
-              value={createForm.ingredients}
+              value={transformIngredient(createForm.ingredients)}
               onChange={handleChange}
+              disabled={true}
               required
             />
           </div>
-          <FormRow
-              type="textarea"
-              name="ingredients"
-              labelText="Ingredients: "
-              value={createForm.ingredients}
-              onChange={handleChange}
-              required
-          />
-          <FormRow
-              type="textarea"
+          <AddIngredient addIngredient={handleAddIngredient}/>
+          <label htmlFor="steps" className="step-label">Steps</label>
+          <textarea
               name="steps"
-              labelText="Steps: "
-              value={createForm.steps}
+              value={transformStep(createForm.steps)}
               onChange={handleChange}
+              disabled={true}
               required
           />
+          <AddSteps addStep={handleAddStep}/>
           <FormRow
               type="number"
               name="portions"
@@ -188,6 +235,7 @@ function CreateRecipe() {
         </form>
         <p>Add new diet</p>
         <AddDiet addDiet={handleAddDiet}/>
+        <p>Add new unit</p>
         <AddUnit addUnit={handleAddUnit}/>
       </>
   );
