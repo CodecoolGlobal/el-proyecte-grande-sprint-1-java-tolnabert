@@ -35,11 +35,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter(){
+    public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
 
-    public DaoAuthenticationProvider authenticationProvider(){
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -53,27 +53,28 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/api/clients/{id}").permitAll()
+                        .requestMatchers("/api/clients/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/clients/{id}").permitAll()
                         //TODO possible patch and delete handled in service layer
-                        .requestMatchers(HttpMethod.GET,"/api/recipes/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/recipes/").permitAll()
                         .requestMatchers("/api/clients").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST,"/api/recipes").hasRole("USER")
-                        .requestMatchers(HttpMethod.PATCH,"/api/recipes").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE,"/api/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/recipes").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/diets").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/diets").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/api/units").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/units").hasRole("USER")
                         .requestMatchers("/api/units/**").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
