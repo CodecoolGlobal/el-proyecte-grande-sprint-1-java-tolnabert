@@ -1,29 +1,21 @@
 import { useState } from "react";
 import FormRow from "../components/FormRow";
-import { Link, useNavigate } from "react-router-dom";
 
-type FormState = {
+type UpdateState = {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
   email: string;
-  username: string;
-  password: string;
-  passwordConfirmation: string;
 };
 
-function Register() {
-  const navigate = useNavigate();
+function ChangeProfile() {
   const [message, setMessage] = useState<string>("");
   const [loading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormState>({
+  const [formData, setFormData] = useState<UpdateState>({
     firstName: "",
     lastName: "",
     dateOfBirth: new Date(),
     email: "",
-    username: "",
-    password: "",
-    passwordConfirmation: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,30 +35,34 @@ function Register() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password !== formData.passwordConfirmation) {
-      setMessage("Passwords do not match");
-      return;
-    }
+    const jwtToken = localStorage.getItem("jwtToken");
+
     setIsLoading(true);
     setMessage("");
     try {
-      const response = await fetch("/api/clients/auth/register", {
-        method: "POST",
+      const response = await fetch("/api/clients/user/change-profile", {
+        method: "PATCH",
         headers: {
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        setMessage("Registration successful! You can now login.");
-        navigate("/login");
+        setMessage("Profile update successful!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          dateOfBirth: new Date(),
+          email: "",
+        });
       } else {
         const data = await response.json();
-        setMessage(data.message || "Failed to register");
+        setMessage(data.message || "Failed to update profile");
       }
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Error during profile update:", error);
       setMessage("An error occurred. Please try again later.");
     } finally {
       setIsLoading(false);
@@ -108,39 +104,13 @@ function Register() {
           onChange={handleChange}
           required
         />
-        <FormRow
-          type='text'
-          name='username'
-          labelText='Username: '
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <FormRow
-          type='password'
-          name='password'
-          labelText='Password: '
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <FormRow
-          type='password'
-          name='passwordConfirmation'
-          labelText='Password confirmation: '
-          value={formData.passwordConfirmation}
-          onChange={handleChange}
-          required
-        />
         <button type='submit' disabled={loading}>
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Updating..." : "Update"}
         </button>
         {message && <p>{message}</p>}
       </form>
-      <p>
-        Already a member? <Link to='/login'>Login</Link>
-      </p>
     </>
   );
 }
-export default Register;
+
+export default ChangeProfile;

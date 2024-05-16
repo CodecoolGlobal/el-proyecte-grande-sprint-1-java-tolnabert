@@ -65,6 +65,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/clients/auth/**").permitAll()
+                        .requestMatchers("/api/clients/user/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/clients/{id}").permitAll()
                         //TODO possible patch and delete handled in service layer
                         .requestMatchers(HttpMethod.GET, "/api/recipes/").permitAll()

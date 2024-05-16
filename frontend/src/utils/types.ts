@@ -25,8 +25,25 @@ export type Recipe = {
 export type Diet = {
   name: string;
   isChecked: boolean;
-}
+};
 
 export type Unit = {
   name: string;
-}
+};
+
+export type LoginState = {
+  username: string;
+  password: string;
+};
+
+export type fetchPatchPwChangeAuthParams = {
+  url: string;
+  jwtToken: string;
+  newPassword: string;
+};
+
+export type PasswordChange = {
+  oldPassword: string;
+  newPassword: string;
+  confirmationPassword: string;
+};

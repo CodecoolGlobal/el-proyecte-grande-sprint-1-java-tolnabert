@@ -1,7 +1,7 @@
 package com.codecool.chilibeans.service;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
-import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
+import com.codecool.chilibeans.controller.dto.diet.DietDTO;
+import com.codecool.chilibeans.controller.dto.diet.NewDietDTO;
 import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
 import com.codecool.chilibeans.model.recipe.Diet;
 import com.codecool.chilibeans.repository.recipe.DietRepository;

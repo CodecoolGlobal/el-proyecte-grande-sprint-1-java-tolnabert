@@ -10,6 +10,8 @@ import MyRecipes from "./pages/MyRecipes";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateRecipe from "./pages/CreateRecipe";
+import Profile from "./pages/Profile";
+import ChangeProfile from "./pages/ChangeProfile";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
       {
         path: "/shopping-list",
         element: <ShoppingList />,
+      },
+      {
+        path: "/my-profile",
+        element: <Profile />,
+      },
+      {
+        path: "/change-profile",
+        element: <ChangeProfile />,
       },
     ],
   },
