@@ -10,7 +10,7 @@ export type User = {
 };
 
 export type Recipe = {
-  id: string;
+  publicId: string;
   name: string;
   description: string;
   diets: string[];

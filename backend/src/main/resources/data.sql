@@ -24,4 +24,13 @@ FROM client
 WHERE public_id = '04d647ac-9f74-4c2a-b966-2ae6a6baa87a';
 
 SELECT *
-from client
+from client;
+
+--Recipe
+INSERT INTO recipe (public_id, name, description, portions, image, created_at, created_by_id)
+VALUES ('1494d916-8dfe-4873-91a9-caac1b014edc', 'Chilisbab', 'Nagyon finom, Norbi kedvence', '0', 'https://kep.index.hu/1/0/2909/29098/290985/29098593_4d6b80f6c4fa227fa2408f9bf182f4ba_wm.jpg', CURRENT_DATE, 1);
+INSERT INTO recipe (public_id, name, description, portions, image, created_at, created_by_id)
+VALUES ('2494d916-8dfe-4873-91a9-caac1b014edc', 'Chilisbab', 'Nagyon finom, Norbi kedvence', '0', 'https://kep.index.hu/1/0/2909/29098/290985/29098593_4d6b80f6c4fa227fa2408f9bf182f4ba_wm.jpg', CURRENT_DATE, 1);
+INSERT INTO recipe (public_id, name, description, portions, image, created_at, created_by_id)
+VALUES ('3494d916-8dfe-4873-91a9-caac1b014edc', 'Chilisbab', 'Nagyon finom, Norbi kedvence', '0', 'https://kep.index.hu/1/0/2909/29098/290985/29098593_4d6b80f6c4fa227fa2408f9bf182f4ba_wm.jpg', CURRENT_DATE, 1);
+
