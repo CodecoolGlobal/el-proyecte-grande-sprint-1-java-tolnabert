@@ -1,12 +1,10 @@
 package com.codecool.chilibeans.controller;
 
-import com.codecool.chilibeans.controller.dto.client.JwtResponse;
-import com.codecool.chilibeans.controller.dto.client.LoginRequest;
-import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
-import com.codecool.chilibeans.controller.dto.client.ClientDTO;
+import com.codecool.chilibeans.controller.dto.client.*;
 import com.codecool.chilibeans.service.ClientService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,13 +34,18 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ClientDTO getById(@PathVariable("id") UUID uuid) {
+    public ClientDTO getByPublicId(@PathVariable("id") UUID uuid) {
         return clientService.getByPublicId(uuid);
     }
 
-    @PatchMapping("/user")
-    public ClientDTO updateById(@RequestBody ClientDTO clientDTO) {
-        return clientService.updateByPublicId(clientDTO);
+    @PatchMapping("/user/change-profile")
+    public ClientDTO updateByUsername(@RequestBody UpdateClientDTO updateClientDTO, Principal principal) {
+        return clientService.updateClientByUsername(updateClientDTO, principal);
+    }
+
+    @PatchMapping("/user/change-password")
+    public void updatePasswordByUsername(@RequestBody UpdatePasswordDTO updatePasswordDTO, Principal principal) {
+        clientService.updatePasswordByUsername(updatePasswordDTO, principal);
     }
 
     @DeleteMapping("/user/{id}")

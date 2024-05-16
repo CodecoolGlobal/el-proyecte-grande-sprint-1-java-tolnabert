@@ -11,54 +11,64 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateRecipe from "./pages/CreateRecipe";
 import SingleRecipe from "./pages/SingleRecipe.tsx";
+import Profile from "./pages/Profile";
+import ChangeProfile from "./pages/ChangeProfile";
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <HomeLayout/>,
-        children: [
-            {
-                index: true,
-                element: <Landing/>,
-            },
-            {
-                path: "/about-us",
-                element: <AboutUs/>,
-            },
-            {
-                path: "/recipes",
-                element: <Recipes/>,
-            },
-            {
-                path: "/favorite-recipes",
-                element: <FavoriteRecipes/>,
-            },
-            {
-                path: "/my-recipes",
-                element: <MyRecipes/>,
-            },
-            {
-                path: "/create-recipe",
-                element: <CreateRecipe/>,
-            },
-            {
-                path: "/shopping-list",
-                element: <ShoppingList/>,
-            },
-            {
-                path: "/single-recipe/:id",
-                element: <SingleRecipe/>
-            }
-        ],
-    },
-    {
-        path: "/login",
-        element: <Login/>,
-    },
-    {
-        path: "/register",
-        element: <Register/>,
-    },
+  {
+    path: "/",
+    element: <HomeLayout />,
+    children: [
+      {
+        index: true,
+        element: <Landing />,
+      },
+      {
+        path: "/about-us",
+        element: <AboutUs />,
+      },
+      {
+        path: "/recipes",
+        element: <Recipes />,
+      },
+      {
+        path: "/favorite-recipes",
+        element: <FavoriteRecipes />,
+      },
+      {
+        path: "/my-recipes",
+        element: <MyRecipes />,
+      },
+      {
+        path: "/create-recipe",
+        element: <CreateRecipe />,
+      },
+      {
+        path: "/shopping-list",
+        element: <ShoppingList />,
+      },
+      {
+        path: "/my-profile",
+        element: <Profile />,
+      },
+      {
+        path: "/change-profile",
+        element: <ChangeProfile />,
+      },
+      {
+        path: "/single-recipe/:id",
+        element: <SingleRecipe/>
+      }
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
 ]);
 
 function App() {

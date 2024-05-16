@@ -1,7 +1,7 @@
 package com.codecool.chilibeans.controller;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
-import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
+import com.codecool.chilibeans.controller.dto.diet.DietDTO;
+import com.codecool.chilibeans.controller.dto.diet.NewDietDTO;
 import com.codecool.chilibeans.service.DietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

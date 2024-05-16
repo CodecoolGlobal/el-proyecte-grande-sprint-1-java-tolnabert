@@ -67,8 +67,8 @@ public class WebSecurityConfig {
 
                         //Client endpoints
                         .requestMatchers("/api/clients/auth/**").permitAll()
+                        .requestMatchers("/api/clients/user/**").hasRole("USER")
                         .requestMatchers("/api/clients/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/clients/user").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/clients/{id}").permitAll()
 
                         //Recipe endpoints

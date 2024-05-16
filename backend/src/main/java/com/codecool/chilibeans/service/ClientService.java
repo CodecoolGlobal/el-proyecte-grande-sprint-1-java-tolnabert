@@ -1,5 +1,7 @@
 package com.codecool.chilibeans.service;
 
+
+import com.codecool.chilibeans.controller.dto.client.*;
 import com.codecool.chilibeans.controller.dto.client.JwtResponse;
 import com.codecool.chilibeans.controller.dto.client.LoginRequest;
 import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,24 +59,34 @@ public class ClientService {
         return clientRepository.deleteByPublicId(publicId);
     }
 
-    public ClientDTO updateByPublicId(ClientDTO clientDTO) {
-        //TODO consider different DTO for password change and recipes as well
-        Optional<Client> optionalUser = clientRepository.findByPublicId(clientDTO.publicId());
+    public ClientDTO updateClientByUsername(UpdateClientDTO updateClientDTO, Principal principal) {
+
+        Optional<Client> optionalUser = clientRepository.findByUsernameIgnoreCase(principal.getName());
         if (optionalUser.isEmpty()) {
             throw new NoSuchElementException();
         }
         Client client = optionalUser.get();
 
-        client.setUsername(clientDTO.username());
-        client.setFirstName(clientDTO.firstName());
-        client.setLastName(clientDTO.lastName());
-        client.setDateOfBirth(clientDTO.dateOfBirth());
-        client.setEmail(clientDTO.email());
-        client.setOwnRecipes(clientDTO.ownRecipes());
-        client.setFavoredRecipes(clientDTO.favoredRecipes());
+        client.setFirstName(updateClientDTO.firstName());
+        client.setLastName(updateClientDTO.lastName());
+        client.setDateOfBirth(updateClientDTO.dateOfBirth());
+        client.setEmail(updateClientDTO.email());
+
         clientRepository.save(client);
 
         return convertToClientDTO(client);
+    }
+
+    public void updatePasswordByUsername(UpdatePasswordDTO updatePasswordDTO, Principal principal) {
+        Optional<Client> optionalUser = clientRepository.findByUsernameIgnoreCase(principal.getName());
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        Client client = optionalUser.get();
+
+        client.setPassword(encoder.encode(updatePasswordDTO.newPassword()));
+
+        clientRepository.save(client);
     }
 
     private static ClientDTO convertToClientDTO(Client client) {
@@ -90,12 +103,8 @@ public class ClientService {
     }
 
     public void registerClient(NewClientDTO registrationRequest) {
-        if (clientRepository.existsByUsername(registrationRequest.username())) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-
-        if (clientRepository.existsByEmail(registrationRequest.email())) {
-            throw new IllegalArgumentException("Email already exists");
+        if (clientRepository.existsByUsernameOrEmail(registrationRequest.username(), registrationRequest.email())) {
+            throw new IllegalArgumentException("Username or Email already exists");
         }
 
         Client client = new Client();
