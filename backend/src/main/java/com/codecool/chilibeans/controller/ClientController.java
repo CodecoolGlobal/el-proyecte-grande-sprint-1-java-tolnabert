@@ -30,7 +30,7 @@ public class ClientController {
         return clientService.authenticateUser(loginRequest);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public Set<ClientDTO> getAll() {
         return clientService.getAll();
     }
@@ -40,13 +40,13 @@ public class ClientController {
         return clientService.getByPublicId(uuid);
     }
 
-    @PatchMapping
+    @PatchMapping("/user")
     public ClientDTO updateById(@RequestBody ClientDTO clientDTO) {
         return clientService.updateByPublicId(clientDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable("id") UUID uuid) {
+    @DeleteMapping("/user/{id}")
+    public int deleteById(@PathVariable("id") UUID uuid) {
         return clientService.deleteByPublicId(uuid);
     }
 }
