@@ -18,7 +18,7 @@ public class UnitController {
         this.unitService = unitService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public Set<UnitDTO> getAll() {
         return unitService.getAll();
     }
@@ -28,18 +28,18 @@ public class UnitController {
         return unitService.getByPublicId(uuid);
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public UnitDTO create(@RequestBody NewUnitDTO newUnitDTO) {
         return unitService.save(newUnitDTO);
     }
 
-    @PatchMapping
+    @PatchMapping("/admin")
     public UnitDTO updateById(@RequestBody UnitDTO unitDTO) {
         return unitService.updateById(unitDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable("id") UUID uuid) {
+    @DeleteMapping("/admin/{id}")
+    public int deleteById(@PathVariable("id") UUID uuid) {
         return unitService.deleteByPublicId(uuid);
     }
 }

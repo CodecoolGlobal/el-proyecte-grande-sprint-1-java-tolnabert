@@ -31,18 +31,18 @@ public class RecipeController {
         return recipeService.getByPublicId(id);
     }
 
-    @PostMapping
+    @PostMapping("/user")
     public RecipeDTO create(@RequestBody NewRecipeDTO newRecipeDTO) {
         return recipeService.save(newRecipeDTO);
     }
 
-    @PatchMapping
+    @PatchMapping("/user")
     public RecipeDTO updateById(@RequestBody RecipeDTO recipeDTO) {
         return recipeService.updateByPublicId(recipeDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable UUID id) {
+    @DeleteMapping("/user/{id}")
+    public int deleteById(@PathVariable UUID id) {
         return recipeService.deleteByPublicId(id);
     }
 

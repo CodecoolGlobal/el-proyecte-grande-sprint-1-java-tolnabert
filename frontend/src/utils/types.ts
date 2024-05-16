@@ -10,7 +10,7 @@ export type User = {
 };
 
 export type Recipe = {
-  id: string;
+  publicId: string;
   name: string;
   description: string;
   diets: string[];
@@ -21,6 +21,7 @@ export type Recipe = {
   createdBy: User;
   createdAt: Date;
 };
+
 
 export type Diet = {
   name: string;
@@ -47,3 +48,14 @@ export type PasswordChange = {
   newPassword: string;
   confirmationPassword: string;
 };
+}
+
+export type Step = {
+  step: string;
+}
+
+export interface Ingredient {
+  name: string;
+  unit: string;
+  portions: number;
+}

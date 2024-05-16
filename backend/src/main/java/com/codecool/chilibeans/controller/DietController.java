@@ -30,18 +30,18 @@ public class DietController {
         return dietService.getByPublicId(id);
     }
 
-    @PostMapping
+    @PostMapping("/user")
     public DietDTO create(@RequestBody NewDietDTO newDietDTO) {
         return dietService.save(newDietDTO);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/user")
     public DietDTO updateById(@RequestBody DietDTO dietDTO) {
         return dietService.updateByPublicId(dietDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable UUID id) {
+    @DeleteMapping("/admin/{id}")
+    public int deleteById(@PathVariable UUID id) {
         return dietService.deleteByPublicId(id);
     }
 }

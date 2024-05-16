@@ -1,6 +1,11 @@
 package com.codecool.chilibeans.service;
 
+
 import com.codecool.chilibeans.controller.dto.client.*;
+import com.codecool.chilibeans.controller.dto.client.JwtResponse;
+import com.codecool.chilibeans.controller.dto.client.LoginRequest;
+import com.codecool.chilibeans.controller.dto.client.NewClientDTO;
+import com.codecool.chilibeans.controller.dto.client.ClientDTO;
 import com.codecool.chilibeans.model.Client;
 import com.codecool.chilibeans.model.Role;
 import com.codecool.chilibeans.repository.ClientRepository;
@@ -13,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -48,7 +54,8 @@ public class ClientService {
         return convertToClientDTO(client);
     }
 
-    public boolean deleteByPublicId(UUID publicId) {
+    @Transactional
+    public int deleteByPublicId(UUID publicId) {
         return clientRepository.deleteByPublicId(publicId);
     }
 

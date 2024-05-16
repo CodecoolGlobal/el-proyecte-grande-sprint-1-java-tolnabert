@@ -28,7 +28,7 @@ public class ClientController {
         return clientService.authenticateUser(loginRequest);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public Set<ClientDTO> getAll() {
         return clientService.getAll();
     }
@@ -48,8 +48,8 @@ public class ClientController {
         clientService.updatePasswordByUsername(updatePasswordDTO, principal);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteByPublicId(@PathVariable("id") UUID uuid) {
+    @DeleteMapping("/user/{id}")
+    public int deleteById(@PathVariable("id") UUID uuid) {
         return clientService.deleteByPublicId(uuid);
     }
 }

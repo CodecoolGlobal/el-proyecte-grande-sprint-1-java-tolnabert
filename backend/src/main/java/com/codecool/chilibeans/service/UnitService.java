@@ -7,6 +7,7 @@ import com.codecool.chilibeans.model.recipe.Unit;
 import com.codecool.chilibeans.repository.recipe.UnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,11 +55,13 @@ public class UnitService {
         }
         Unit unit = optionalUnit.get();
         unit.setUnitName(unitDTO.unitName());
+        unitRepository.save(unit);
 
         return new UnitDTO(unit.getPublicId(), unit.getUnitName());
     }
 
-    public boolean deleteByPublicId(UUID publicId) {
+    @Transactional
+    public int deleteByPublicId(UUID publicId) {
         return unitRepository.deleteByPublicId(publicId);
     }
 }

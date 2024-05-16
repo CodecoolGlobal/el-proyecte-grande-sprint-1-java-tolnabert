@@ -10,5 +10,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByPublicId(UUID publicId);
     Optional<Client> findByUsernameIgnoreCase(String username);
     boolean existsByUsernameOrEmail(String username, String email);
-    boolean deleteByPublicId(UUID publicId);
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
+    int deleteByPublicId(UUID publicId);
 }

@@ -15,6 +15,14 @@ public class Diet {
     private UUID publicId;
     private String name;
 
+    public Diet() {
+    }
+
+    public Diet(UUID publicId, String name) {
+        this.publicId = publicId;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
