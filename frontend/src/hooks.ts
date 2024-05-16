@@ -6,7 +6,7 @@ type State<T> = {
   isLoading: boolean;
 };
 
-const useFetch = <T>(url: string): State<T> => {
+const useFetch = <T>(url: string, token: string | null): State<T> => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +14,14 @@ const useFetch = <T>(url: string): State<T> => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        const response = await fetch(url, {
+          headers,
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
@@ -28,7 +35,7 @@ const useFetch = <T>(url: string): State<T> => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, token]);
 
   return { data, error, isLoading };
 };
