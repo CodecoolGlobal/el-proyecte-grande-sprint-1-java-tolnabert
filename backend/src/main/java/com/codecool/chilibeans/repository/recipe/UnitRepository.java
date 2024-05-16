@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface UnitRepository extends JpaRepository<Unit, Long> {
     Optional<Unit> findByPublicId(UUID publicId);
     Optional<Unit> findByUnitNameIgnoreCase(String name);
-    boolean deleteByPublicId(UUID publicId);
+    int deleteByPublicId(UUID publicId);
 }

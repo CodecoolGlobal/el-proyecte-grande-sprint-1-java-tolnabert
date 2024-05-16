@@ -12,6 +12,6 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
 
     Optional<Diet> findByNameIgnoreCase(String name);
 
-    boolean deleteByPublicId(UUID publicId);
+    int deleteByPublicId(UUID publicId);
 
 }
