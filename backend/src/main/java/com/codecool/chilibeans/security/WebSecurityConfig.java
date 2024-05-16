@@ -70,11 +70,13 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/recipes/").permitAll()
                         .requestMatchers("/api/clients").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/recipes").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/recipes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/recipes").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE, "/api/recipes").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/diets").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/diets").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/units").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/units").hasRole("ADMIN")
                         .requestMatchers("/api/units/**").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());

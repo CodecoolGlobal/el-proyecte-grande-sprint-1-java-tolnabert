@@ -39,9 +39,10 @@ function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        console.log("login", data);
         localStorage.setItem("jwtToken", data.jwt);
         localStorage.setItem("roles", data.roles);
+        localStorage.setItem("username", data.username);
         navigate("/");
       } else {
         setMessage("Incorrect username or password");

@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import {Ingredient} from "../utils/types.ts";
+import {Ingredient, Unit} from "../utils/types.ts";
 
 
 
@@ -8,16 +8,22 @@ interface AddIngredientProps {
 }
 
 function AddIngredient({ addIngredient }: AddIngredientProps) {
-    const [units, setUnits] = useState<string[]>(["ml", "dl", "l"]);
+    const [units, setUnits] = useState<Unit[]>([] );
     const [unitToAdd, setUnitToAdd] = useState<string>("");
     const [ingredientName, setIngredientName] = useState<string>("");
     const [portions, setPortions] = useState<number>(0);
 
     useEffect(() => {
         async function fetchUnits() {
+            const token = localStorage.getItem("jwtToken");
             try {
-                const response = await fetch("http://localhost:8080/api/units");
+                const response = await fetch("/api/units", {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
                 const data = await response.json();
+                console.log("From addingredient", data)
                 setUnits(data);
             } catch (error) {
                 console.error("Error fetching units:", error);
@@ -60,9 +66,9 @@ function AddIngredient({ addIngredient }: AddIngredientProps) {
             <input type="number" onChange={handlePortionChange} value={portions}/>
             <label>Choose unit:</label>
             <select name="unit" onChange={(event) => handleUnitChange(event)}>
-                {units.map((unit, index) => (
-                    <option key={index} value={unit}>
-                        {unit}
+                {Array.isArray(units) && units.map((unit, index) => (
+                    <option key={index} value={unit.unitName}>
+                        {unit.unitName}
                     </option>
                 ))}
             </select>

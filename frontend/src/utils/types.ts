@@ -13,7 +13,7 @@ export type Recipe = {
   id: string;
   name: string;
   description: string;
-  diets: string[];
+  diets: Diet[];
   ingredients: string[];
   steps: string[];
   portions: number;
@@ -24,12 +24,19 @@ export type Recipe = {
 
 
 export type Diet = {
+  publicId: string;
   name: string;
   isChecked: boolean;
 }
 
-export type Unit = {
+export type DietDTO = {
+  id: string;
   name: string;
+}
+
+export type Unit = {
+  unitId: string,
+  unitName: string;
 }
 
 export type Step = {
@@ -38,6 +45,6 @@ export type Step = {
 
 export interface Ingredient {
   name: string;
-  unit: string;
+  unit: Unit;
   portions: number;
 }

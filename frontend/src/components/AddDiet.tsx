@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface AddDietProps {
-    addDiet: (dietName: string) => void;
+    addDiet: (id: string,dietName: string) => void;
 }
 
 const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
@@ -12,11 +12,14 @@ const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+        e.preventDefault()
+        const token = localStorage.getItem("jwtToken");
+        console.log(token)
         try {
             const response = await fetch("/api/diets", {
                 method: "POST",
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ name: newDiet }),
@@ -24,7 +27,7 @@ const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
             if (!response.ok) {
                 throw new Error("Failed to add diet");
             }
-            addDiet(newDiet);
+            addDiet("", newDiet);
             setNewDiet("");
         } catch (error) {
             console.error("Error adding diet: ", error);

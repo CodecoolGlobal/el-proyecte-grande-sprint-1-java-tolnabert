@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import FormRow from "../components/FormRow";
-import { Diet, Ingredient, Step } from "../utils/types";
+import {Diet, Ingredient, Step} from "../utils/types";
 import { Unit } from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import AddDiet from "../components/AddDiet.tsx";
@@ -20,6 +20,7 @@ function CreateRecipe() {
     portions: 0,
     image: "",
     createdBy: "",
+    createdAt: ""
   });
 
   useEffect(() => {
@@ -28,12 +29,18 @@ function CreateRecipe() {
   }, []);
 
   const getDiets = async () => {
+    const token = localStorage.getItem("jwtToken");
     try {
-      const response = await fetch("api/diets");
+      const response = await fetch("api/diets", {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch diets");
       }
       const diets: Diet[] = await response.json();
+      console.log("getDiets: ", diets)
       setCreateForm((prevForm) => ({
         ...prevForm,
         diets: diets,
@@ -44,12 +51,20 @@ function CreateRecipe() {
   };
 
   const getUnits = async () => {
+    const token = localStorage.getItem("jwtToken");
     try {
-      const response = await fetch("api/units");
+      const response = await fetch("/api/units", {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              }
+            }
+          );
       if (!response.ok) {
         throw new Error("Failed to fetch units");
       }
+
       const units: Unit[] = await response.json();
+      console.log("uuunits", units)
       setCreateForm((prevForm) => ({
         ...prevForm,
         units: units,
@@ -71,20 +86,30 @@ function CreateRecipe() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const createdBy = localStorage.getItem("username");
+    const portion = parseInt(String(createForm.portions))
     try {
-      const checkedDiets = createForm.diets.filter((diet) => diet.isChecked).map((diet) => diet.name);
-      console.log(checkedDiets)
+      const checkedDiets = createForm.diets
+          .filter((diet) => diet.isChecked)
+          .map(({ publicId, name }) => ({ publicId, name }));
+      console.log("checkedDiets", checkedDiets)
       const recipeData = {
         ...createForm,
+        portions: portion,
         diets: checkedDiets,
+        createdBy: createdBy,
+        createdAt: new Date()
       };
 
       console.log(recipeData)
 
+
+      const token = localStorage.getItem("jwtToken")
       const response = await fetch("/api/recipes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(recipeData),
       });
@@ -102,6 +127,7 @@ function CreateRecipe() {
         portions: 0,
         image: "",
         createdBy: "",
+        createdAt: ""
       });
     } catch (error) {
       console.error("Error creating recipe: ", error);
@@ -120,17 +146,18 @@ function CreateRecipe() {
     }));
   };
 
-  const handleAddDiet = (dietName: string) => {
+  const handleAddDiet = (dietName: string, id:string) => {
+
     setCreateForm((prevForm) => ({
       ...prevForm,
-      diets: [...prevForm.diets, { name: dietName, isChecked: false }],
+      diets: [...prevForm.diets, { publicId:id, name: dietName, isChecked: false }],
     }));
   };
 
-  const handleAddUnit = (unitName: string) => {
+  const handleAddUnit = ( name: string, id:string) => {
     setCreateForm((prevForm) => ({
       ...prevForm,
-      units: [...prevForm.units, { name: unitName }],
+      units: [...prevForm.units, { unitId: id, unitName: name }],
     }));
   };
 
@@ -187,7 +214,7 @@ function CreateRecipe() {
           <ul style={{listStyle: "none"}}>
             {createForm.diets.map((diet: Diet, index) => (
                 <Checkbox
-                    key={index}
+                    key={diet.publicId}
                     index={index}
                     handleCheckChildElement={handleCheckChildElement}
                     value={diet.name}
