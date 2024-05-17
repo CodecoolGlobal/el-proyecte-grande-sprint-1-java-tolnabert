@@ -9,7 +9,13 @@ interface AddIngredientProps {
 
 function AddIngredient({ addIngredient }: AddIngredientProps) {
     const [units, setUnits] = useState<Unit[]>([] );
-    const [unitToAdd, setUnitToAdd] = useState<string>("");
+    // get the the publicId from the unit
+    //const [unitId, setUnitId] = useState<string>();
+    // actual unit object
+    const [unitToAdd, setUnitToAdd] = useState<Unit>({
+        publicId: "",
+        unitName: ""
+    });
     const [ingredientName, setIngredientName] = useState<string>("");
     const [portions, setPortions] = useState<number>(0);
 
@@ -33,22 +39,35 @@ function AddIngredient({ addIngredient }: AddIngredientProps) {
         fetchUnits();
     }, []);
 
-    const handleSubmitIngredient = () => {
+    const handleSubmitIngredient = async () => {
         console.log("AddIngredient");
+
+        // implement fetch unit
+        //const response = await fetch(`/api/units/${unitToAdd}`, {
+
+        //})
+
         const ingredient: Ingredient = {
             name: ingredientName,
             portions: portions,
+            // point the unit with publicId
             unit: unitToAdd,
         }
         addIngredient(ingredient);
         setIngredientName("");
         setPortions(0);
-        setUnitToAdd("");
+        setUnitToAdd({
+            publicId: "",
+            unitName: ""
+        });
     }
 
     const handleUnitChange = ( event: React.ChangeEvent<HTMLSelectElement>) => {
-        setUnitToAdd(event.target.value);
-        console.log(unitToAdd)
+        setUnitToAdd({
+            publicId: event.target.id,
+            unitName: event.target.value
+        });
+        console.log("unit to add:  " + event.target.accessKey);
     }
 
     const handleIngredientNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,8 +85,8 @@ function AddIngredient({ addIngredient }: AddIngredientProps) {
             <input type="number" onChange={handlePortionChange} value={portions}/>
             <label>Choose unit:</label>
             <select name="unit" onChange={(event) => handleUnitChange(event)}>
-                {Array.isArray(units) && units.map((unit, index) => (
-                    <option key={index} value={unit.unitName}>
+                {Array.isArray(units) && units.map((unit) => (
+                    <option key={unit.publicId} value={unit.unitName} id={unit.publicId}>
                         {unit.unitName}
                     </option>
                 ))}

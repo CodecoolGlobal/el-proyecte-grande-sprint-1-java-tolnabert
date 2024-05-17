@@ -15,7 +15,7 @@ const AddUnit: React.FC<AddUnitProps> = ({ addUnit }) => {
         e.preventDefault();
         const token = localStorage.getItem("jwtToken");
         try {
-            const response = await fetch("/api/units", {
+            const response = await fetch("/api/units/admin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const AddUnit: React.FC<AddUnitProps> = ({ addUnit }) => {
             if (!response.ok) {
                 throw new Error("Failed to add unit");
             }
-            const { unitId } = await response.json(); // Assuming the backend returns the generated unit ID
+            const { unitId } = await response.json();
             addUnit(newUnit, unitId);
             setNewUnit("");
         } catch (error) {

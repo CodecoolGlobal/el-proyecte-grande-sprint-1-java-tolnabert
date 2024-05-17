@@ -105,7 +105,7 @@ function CreateRecipe() {
 
 
       const token = localStorage.getItem("jwtToken")
-      const response = await fetch("/api/recipes", {
+      const response = await fetch("/api/recipes/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

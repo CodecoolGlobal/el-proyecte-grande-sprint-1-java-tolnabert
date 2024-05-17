@@ -50,10 +50,9 @@ export type PasswordChange = {
   newPassword: string;
   confirmationPassword: string;
 };
-}
 
 export type Unit = {
-  unitId: string,
+  publicId: string,
   unitName: string;
 }
 
@@ -63,6 +62,6 @@ export type Step = {
 
 export interface Ingredient {
   name: string;
-  unit: Unit;
+  unit: Unit | null;
   portions: number;
 }
