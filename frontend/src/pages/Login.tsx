@@ -37,8 +37,10 @@ function Login() {
 
       if (response.ok) {
         const data = await response.json();
+        
         localStorage.setItem("jwtToken", data.jwt);
         localStorage.setItem("roles", data.roles);
+        localStorage.setItem("username", data.username);
         navigate("/");
       } else {
         const data = await response.json();
