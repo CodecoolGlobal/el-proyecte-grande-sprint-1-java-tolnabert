@@ -1,6 +1,6 @@
 package com.codecool.chilibeans.service;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
+import com.codecool.chilibeans.controller.dto.diet.DietDTO;
 import com.codecool.chilibeans.controller.dto.recipe.NewRecipeDTO;
 import com.codecool.chilibeans.controller.dto.recipe.RecipeDTO;
 import com.codecool.chilibeans.exception.ElementMeantToSaveExists;
@@ -12,6 +12,7 @@ import com.codecool.chilibeans.repository.recipe.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -83,13 +84,13 @@ public class RecipeService {
             );
 
             Recipe recipe = new Recipe();
-            setRecipeBasedDTO(newRecipeDTO, recipe, creator);
+            setNewRecipeBasedDTO(newRecipeDTO, recipe, creator);
             return convertToRecipeDTO(recipe);
         }
         throw new ElementMeantToSaveExists(newRecipeDTO);
     }
 
-    private void setRecipeBasedDTO(NewRecipeDTO newRecipeDTO, Recipe recipe, Client creator) {
+    private void setNewRecipeBasedDTO(NewRecipeDTO newRecipeDTO, Recipe recipe, Client creator) {
         recipe.setPublicId(UUID.randomUUID());
         recipe.setName(newRecipeDTO.name());
         recipe.setDescription(newRecipeDTO.description());
@@ -103,18 +104,28 @@ public class RecipeService {
         recipeRepository.save(recipe);
     }
 
+    private void setRecipeBasedDTO(RecipeDTO recipeDTO, Recipe recipe) {
+        recipe.setName(recipeDTO.name());
+        recipe.setDescription(recipeDTO.description());
+        recipe.setDiets(recipeDTO.diets().stream().map(dietDTO -> new Diet(dietDTO.publicId(), dietDTO.name())).collect(Collectors.toSet()));
+        recipe.setIngredients(recipeDTO.ingredients());
+        recipe.setSteps(recipeDTO.steps());
+        recipe.setPortions(recipeDTO.portions());
+        recipe.setImage(recipeDTO.image());
+        recipeRepository.save(recipe);
+    }
+
 
     public RecipeDTO updateByPublicId(RecipeDTO recipeDTO) {
-
         Recipe recipe = recipeRepository.findByPublicId(recipeDTO.publicId()).orElseThrow(NoSuchElementException::new);
-        //TODO: update it ... save
+        setRecipeBasedDTO(recipeDTO, recipe);
         return convertToRecipeDTO(recipe);
 
 
     }
 
-    public boolean deleteByPublicId(UUID publicId) {
+    @Transactional
+    public int deleteByPublicId(UUID publicId) {
         return recipeRepository.deleteByPublicId(publicId); //TODO: unsuccessful deletion should throw exception
     }
-
 }

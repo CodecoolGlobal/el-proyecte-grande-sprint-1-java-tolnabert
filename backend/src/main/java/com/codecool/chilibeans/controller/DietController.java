@@ -1,7 +1,7 @@
 package com.codecool.chilibeans.controller;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
-import com.codecool.chilibeans.controller.dto.DietDTO.NewDietDTO;
+import com.codecool.chilibeans.controller.dto.diet.DietDTO;
+import com.codecool.chilibeans.controller.dto.diet.NewDietDTO;
 import com.codecool.chilibeans.service.DietService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,18 +30,18 @@ public class DietController {
         return dietService.getByPublicId(id);
     }
 
-    @PostMapping
+    @PostMapping("/user")
     public DietDTO create(@RequestBody NewDietDTO newDietDTO) {
         return dietService.save(newDietDTO);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/user")
     public DietDTO updateById(@RequestBody DietDTO dietDTO) {
         return dietService.updateByPublicId(dietDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable UUID id) {
+    @DeleteMapping("/admin/{id}")
+    public int deleteById(@PathVariable UUID id) {
         return dietService.deleteByPublicId(id);
     }
 }

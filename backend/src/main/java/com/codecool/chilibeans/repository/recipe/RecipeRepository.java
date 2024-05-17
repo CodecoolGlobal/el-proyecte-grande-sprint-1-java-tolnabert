@@ -17,6 +17,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Optional<Recipe> findByNameIgnoreCaseAndDescriptionIgnoreCase(String name, String Description);
 
-    boolean deleteByPublicId(UUID publicId);
+    int deleteByPublicId(UUID publicId);
 
 }

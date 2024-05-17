@@ -2,21 +2,19 @@ import React, { useState } from "react";
 import FormRow from "../components/FormRow";
 import { Link, useNavigate } from "react-router-dom";
 
+type LoginState = {
+  username: string;
+  password: string;
+};
+
 function Login() {
   const navigate = useNavigate();
-
-  type FormDataType = {
-    username: string;
-    password: string;
-  };
-
-  const [formData, setFormData] = useState<FormDataType>({
+  const [message, setMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [formData, setFormData] = useState<LoginState>({
     username: "",
     password: "",
   });
-
-  const [message, setMessage] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -39,19 +37,20 @@ function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("login", data);
+        
         localStorage.setItem("jwtToken", data.jwt);
         localStorage.setItem("roles", data.roles);
         localStorage.setItem("username", data.username);
         navigate("/");
       } else {
-        setMessage("Incorrect username or password");
+        const data = await response.json();
+        setMessage(data.message || "Failed to login");
       }
     } catch (error) {
-      console.error("An error occurred:", error);
-      setMessage("An error occurred while logging in");
+      console.error("Error during login:", error);
+      setMessage("An error occurred during registration. Please try again later.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -74,8 +73,8 @@ function Login() {
           onChange={handleChange}
           required
         />
-        <button type='submit' disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <button type='submit' disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
         </button>
         {message && <p>{message}</p>}
       </form>

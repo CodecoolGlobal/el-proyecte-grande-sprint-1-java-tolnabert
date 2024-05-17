@@ -1,6 +1,6 @@
 package com.codecool.chilibeans.controller.dto.recipe;
 
-import com.codecool.chilibeans.controller.dto.DietDTO.DietDTO;
+import com.codecool.chilibeans.controller.dto.diet.DietDTO;
 import com.codecool.chilibeans.model.recipe.Ingredient;
 import com.codecool.chilibeans.model.recipe.Step;
 

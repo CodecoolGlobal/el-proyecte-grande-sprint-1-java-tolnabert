@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {RouterProvider, createBrowserRouter} from "react-router-dom";
 
 import Landing from "./pages/Landing";
 import HomeLayout from "./pages/HomeLayout";
@@ -10,6 +10,9 @@ import MyRecipes from "./pages/MyRecipes";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateRecipe from "./pages/CreateRecipe";
+import SingleRecipe from "./pages/SingleRecipe.tsx";
+import Profile from "./pages/Profile";
+import ChangeProfile from "./pages/ChangeProfile";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +47,18 @@ const router = createBrowserRouter([
         path: "/shopping-list",
         element: <ShoppingList />,
       },
+      {
+        path: "/my-profile",
+        element: <Profile />,
+      },
+      {
+        path: "/change-profile",
+        element: <ChangeProfile />,
+      },
+      {
+        path: "/single-recipe/:id",
+        element: <SingleRecipe/>
+      }
     ],
   },
   {
@@ -57,7 +72,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+    return <RouterProvider router={router}/>;
 }
 
 export default App;

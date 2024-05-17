@@ -1,4 +1,4 @@
-package com.codecool.chilibeans.controller.dto.DietDTO;
+package com.codecool.chilibeans.controller.dto.diet;
 
 import java.util.UUID;
 

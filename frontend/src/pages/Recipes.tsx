@@ -1,93 +1,95 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import RadioButton from "../components/RadioButton";
 import RecipeCard from "../components/RecipeCard";
 import useFetch from "../hooks";
-import { Recipe } from "../utils/types";
+import {Recipe} from "../utils/types";
 import "./Recipes.css"
 import "./SortingOptions.css"
+import {NavLink} from "react-router-dom";
 
 function Recipes() {
 
-  const [selected, setSelected] = useState({
-    sortBy: "name",
-    sortOrder: "desc",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelected({
-      ...selected,
-      [e.target.name]: e.target.value,
+    const [selected, setSelected] = useState({
+        sortBy: "name",
+        sortOrder: "desc",
     });
-    
-  };
-  
 
-  const {
-    data: recipes,
-    error,
-    isLoading,
-  } = useFetch<Recipe[]>( `/api/recipes?sortBy=${selected.sortBy}&sortOrder=${selected.sortOrder}`);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelected({
+            ...selected,
+            [e.target.name]: e.target.value,
+        });
+    };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+    const {
+        data: recipes,
+        error,
+        isLoading,
+    } = useFetch<Recipe[]>(`/api/recipes?sortBy=${selected.sortBy}&sortOrder=${selected.sortOrder}`, localStorage.getItem("jwtToken"));
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
-  console.log(recipes);
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
 
-  return (
-   
-    <div>
-    <div className="sorting-container">
-      <div className="sorting-box">
-        <h2>Order By:</h2>
-        <div className="sorting-options">
-          <RadioButton
-            name="sortBy"
-            labelText="Name"
-            value="name"
-            onChange={handleChange}
-            checked={selected.sortBy === "name"}
-          />
-          <RadioButton
-            name="sortBy"
-            labelText="Creation Date"
-            value="createdAt"
-            onChange={handleChange}
-            checked={selected.sortBy === "createdAt"}
-          />
+    console.log(recipes);
+
+    return (
+
+        <div>
+            <div className="sorting-container">
+                <div className="sorting-box">
+                    <h2>Order By:</h2>
+                    <div className="sorting-options">
+                        <RadioButton
+                            name="sortBy"
+                            labelText="Name"
+                            value="name"
+                            onChange={handleChange}
+                            checked={selected.sortBy === "name"}
+                        />
+                        <RadioButton
+                            name="sortBy"
+                            labelText="Creation Date"
+                            value="createdAt"
+                            onChange={handleChange}
+                            checked={selected.sortBy === "createdAt"}
+                        />
+                    </div>
+                </div>
+                <div className="sorting-box">
+                    <h2>Sort By:</h2>
+                    <div className="sorting-options">
+                        <RadioButton
+                            name="sortOrder"
+                            labelText="Ascending"
+                            value="asc"
+                            onChange={handleChange}
+                            checked={selected.sortOrder === "asc"}
+                        />
+                        <RadioButton
+                            name="sortOrder"
+                            labelText="Descending"
+                            value="desc"
+                            onChange={handleChange}
+                            checked={selected.sortOrder === "desc"}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="recipe-container">
+                {recipes &&
+                    recipes.map((recipe) => (
+                        <NavLink to={`/single-recipe/${recipe.publicId}`}>
+                            <RecipeCard key={recipe.publicId} recipe={recipe}/>
+                        </NavLink>
+                    ))}
+            </div>
         </div>
-      </div>
-      <div className="sorting-box">
-        <h2>Sort By:</h2>
-        <div className="sorting-options">
-          <RadioButton
-            name="sortOrder"
-            labelText="Ascending"
-            value="asc"
-            onChange={handleChange}
-            checked={selected.sortOrder === "asc"}
-          />
-          <RadioButton
-            name="sortOrder"
-            labelText="Descending"
-            value="desc"
-            onChange={handleChange}
-            checked={selected.sortOrder === "desc"}
-          />
-        </div>
-      </div>
-    </div>
-   <div className="recipe-container">
-        {recipes &&
-          recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-      </div>
-    </div>
-  );
+    );
 }
+
 export default Recipes;

@@ -10,7 +10,7 @@ export type User = {
 };
 
 export type Recipe = {
-  id: string;
+  publicId: string;
   name: string;
   description: string;
   diets: Diet[];
@@ -27,11 +27,29 @@ export type Diet = {
   publicId: string;
   name: string;
   isChecked: boolean;
-}
+};
 
 export type DietDTO = {
   id: string;
   name: string;
+};
+
+export type LoginState = {
+  username: string;
+  password: string;
+};
+
+export type fetchPatchPwChangeAuthParams = {
+  url: string;
+  jwtToken: string;
+  newPassword: string;
+};
+
+export type PasswordChange = {
+  oldPassword: string;
+  newPassword: string;
+  confirmationPassword: string;
+};
 }
 
 export type Unit = {
