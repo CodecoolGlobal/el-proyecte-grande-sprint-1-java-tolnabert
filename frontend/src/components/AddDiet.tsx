@@ -16,7 +16,7 @@ const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
         const token = localStorage.getItem("jwtToken");
         console.log(token)
         try {
-            const response = await fetch("/api/diets", {
+            const response = await fetch("/api/diets/user", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`,
