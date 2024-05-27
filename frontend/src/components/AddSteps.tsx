@@ -12,7 +12,7 @@ const AddSteps = ({ addStep }: AddStepProps) => {
 
     const handleClick = () => {
         const step:Step = {
-            step: addNextStep
+            stepDescription: addNextStep
         }
         addStep(step);
     };
