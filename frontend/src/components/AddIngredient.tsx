@@ -7,17 +7,16 @@ interface AddIngredientProps {
     addIngredient: (ingredient: Ingredient) => void;
 }
 
+const defaultUnitState = {
+    publicId: "",
+    unitName: ""
+};
+
 function AddIngredient({ addIngredient }: AddIngredientProps) {
     const [units, setUnits] = useState<Unit[]>([] );
-    // get the the publicId from the unit
-    //const [unitId, setUnitId] = useState<string>();
-    // actual unit object
-    const [unitToAdd, setUnitToAdd] = useState<Unit>({
-        publicId: "",
-        unitName: ""
-    });
+    const [unitToAdd, setUnitToAdd] = useState<Unit>(defaultUnitState);
     const [ingredientName, setIngredientName] = useState<string>("");
-    const [portions, setPortions] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(0);
 
     useEffect(() => {
         async function fetchUnits() {
@@ -40,34 +39,24 @@ function AddIngredient({ addIngredient }: AddIngredientProps) {
     }, []);
 
     const handleSubmitIngredient = async () => {
-        console.log("AddIngredient");
-
-        // implement fetch unit
-        //const response = await fetch(`/api/units/${unitToAdd}`, {
-
-        //})
-
+        if (!ingredientName || !ingredientName.length || !quantity) {
+            return;
+        }
         const ingredient: Ingredient = {
             name: ingredientName,
-            portions: portions,
-            // point the unit with publicId
-            unit: unitToAdd,
+            quantity: quantity,
+            unit: unitToAdd === defaultUnitState ? units[0] : unitToAdd,
         }
         addIngredient(ingredient);
         setIngredientName("");
-        setPortions(0);
-        setUnitToAdd({
-            publicId: "",
-            unitName: ""
-        });
+        setQuantity(0);
+        setUnitToAdd(defaultUnitState);
     }
 
     const handleUnitChange = ( event: React.ChangeEvent<HTMLSelectElement>) => {
-        setUnitToAdd({
-            publicId: event.target.id,
-            unitName: event.target.value
-        });
-        console.log("unit to add:  " + event.target.accessKey);
+        const selectedUnit: Unit | undefined = units.find(unit => unit.publicId === event.target.value);
+        setUnitToAdd(selectedUnit!);
+        console.log("unit to add:  " + selectedUnit?.unitName);
     }
 
     const handleIngredientNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,18 +64,18 @@ function AddIngredient({ addIngredient }: AddIngredientProps) {
     }
 
     const handlePortionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPortions(parseInt(event.target.value));
+        setQuantity(parseInt(event.target.value));
     };
     return (
         <div>
             <label>Ingredient name: </label>
             <input type="text" onChange={handleIngredientNameChange} value={ingredientName}/>
             <label>Portions:</label>
-            <input type="number" onChange={handlePortionChange} value={portions}/>
+            <input type="number" onChange={handlePortionChange} value={quantity}/>
             <label>Choose unit:</label>
             <select name="unit" onChange={(event) => handleUnitChange(event)}>
                 {Array.isArray(units) && units.map((unit) => (
-                    <option key={unit.publicId} value={unit.unitName} id={unit.publicId}>
+                    <option key={unit.publicId} value={unit.publicId} id={unit.publicId}>
                         {unit.unitName}
                     </option>
                 ))}

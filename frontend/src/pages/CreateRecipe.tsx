@@ -20,7 +20,6 @@ function CreateRecipe() {
     portions: 0,
     image: "",
     createdBy: "",
-    createdAt: ""
   });
 
   useEffect(() => {
@@ -86,7 +85,6 @@ function CreateRecipe() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const createdBy = localStorage.getItem("username");
     const portion = parseInt(String(createForm.portions))
     try {
       const checkedDiets = createForm.diets
@@ -97,8 +95,7 @@ function CreateRecipe() {
         ...createForm,
         portions: portion,
         diets: checkedDiets,
-        createdBy: createdBy,
-        createdAt: new Date()
+        createdBy: "d4f8915a-599d-4dd3-a8c3-034f7fa946c4",
       };
 
       console.log(recipeData)
@@ -127,7 +124,6 @@ function CreateRecipe() {
         portions: 0,
         image: "",
         createdBy: "",
-        createdAt: ""
       });
     } catch (error) {
       console.error("Error creating recipe: ", error);
@@ -157,7 +153,7 @@ function CreateRecipe() {
   const handleAddUnit = ( name: string, id:string) => {
     setCreateForm((prevForm) => ({
       ...prevForm,
-      units: [...prevForm.units, { unitId: id, unitName: name }],
+      units: [...prevForm.units, {publicId: id, unitName: name }],
     }));
   };
 
@@ -179,7 +175,7 @@ function CreateRecipe() {
     if(!ingredients.length){
       return "";
     } else {
-      return ingredients.map((ingredient) => `${ingredient.name} - ${ingredient.portions} ${ingredient.unit}`).join(", ");
+      return ingredients.map((ingredient) => `${ingredient.name} - ${ingredient.quantity} ${ingredient.unit?.unitName}`).join(", ");
     }
   }
 
@@ -187,7 +183,7 @@ function CreateRecipe() {
     if(!steps.length){
       return "";
     } else {
-      return steps.map((step, index) => `${index + 1}. ${step.step}`).join(", ");
+      return steps.map((step, index) => `${index + 1}. ${step.stepDescription}`).join(", ");
     }
   };
 
@@ -245,7 +241,7 @@ function CreateRecipe() {
           <FormRow
               type="number"
               name="portions"
-              labelText="Portions: "
+              labelText="Serves: "
               value={createForm.portions}
               onChange={handleChange}
               required

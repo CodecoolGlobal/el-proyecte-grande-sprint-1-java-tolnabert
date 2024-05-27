@@ -57,11 +57,11 @@ export type Unit = {
 }
 
 export type Step = {
-  step: string;
+  stepDescription: string;
 }
 
 export interface Ingredient {
   name: string;
   unit: Unit | null;
-  portions: number;
+  quantity: number;
 }
