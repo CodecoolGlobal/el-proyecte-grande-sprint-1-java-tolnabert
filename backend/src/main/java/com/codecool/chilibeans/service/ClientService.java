@@ -108,14 +108,14 @@ public class ClientService {
         }
 
         Client client = new Client();
-        client.setPublicId(UUID.randomUUID());
+        client.setPublicId(UUID.randomUUID());//hibernat eor Spring data
         client.setUsername(registrationRequest.username());
         client.setPassword(encoder.encode(registrationRequest.password()));
         client.setFirstName(registrationRequest.firstName());
         client.setLastName(registrationRequest.lastName());
         client.setDateOfBirth(registrationRequest.dateOfBirth());
         client.setEmail(registrationRequest.email());
-        client.setCreationDate(LocalDate.now());
+        client.setCreationDate(LocalDate.now());//consider current_date in SQL
         client.setRoles(Set.of(Role.ROLE_USER));
 
         clientRepository.save(client);

@@ -16,11 +16,11 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private UUID publicId;
+    private UUID publicId;//UUID generationType
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
     private String username;
-    private String password;
+    private String password;//constraints
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
@@ -28,7 +28,7 @@ public class Client {
     private String email;
     @OneToMany(mappedBy = "createdBy")
     @JsonManagedReference
-    private Set<Recipe> ownRecipes;
+    private Set<Recipe> ownRecipes;//letting Entity out to frontend, using another DTO instead
     @ManyToMany(mappedBy = "favoredBy")
     private Set<Recipe> favoredRecipes;
     private LocalDate creationDate;

@@ -31,7 +31,7 @@ public class Recipe {
     private LocalDate createdAt;
     @ManyToOne
     @JsonBackReference
-    private Client createdBy;
+    private Client createdBy;//letting Entity out to frontend
     @ManyToMany
     private Set<Client> favoredBy; //TODO: This fields type should be ClientId
 
