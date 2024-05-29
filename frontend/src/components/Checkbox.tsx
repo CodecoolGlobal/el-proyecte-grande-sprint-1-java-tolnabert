@@ -1,6 +1,6 @@
 interface CheckboxProps {
     id?: string;
-    index: number; // Define index prop
+    index: number;
     handleCheckChildElement?(index: number, isChecked: boolean): void;
     isChecked?: boolean;
     value?: string;
@@ -10,7 +10,7 @@ const Checkbox = (props: CheckboxProps) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
         if (props.handleCheckChildElement) {
-            props.handleCheckChildElement(props.index, isChecked); // Use props.index
+            props.handleCheckChildElement(props.index, isChecked);
         }
     };
 

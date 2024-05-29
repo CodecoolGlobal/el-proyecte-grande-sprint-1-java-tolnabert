@@ -7,6 +7,7 @@ import AddDiet from "../components/AddDiet.tsx";
 import AddUnit from "../components/AddUnit.tsx";
 import AddIngredient from "../components/AddIngredient.tsx";
 import AddSteps from "../components/AddSteps.tsx";
+import "../css/createRecipe.css"
 
 
 function CreateRecipe() {
@@ -23,31 +24,32 @@ function CreateRecipe() {
   });
 
   useEffect(() => {
+    async function getDiets(){
+      const token = localStorage.getItem("jwtToken");
+      try {
+        const response = await fetch("api/diets", {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch diets");
+        }
+        const diets: Diet[] = await response.json();
+        console.log("getDiets: ", diets)
+        setCreateForm((prevForm) => ({
+          ...prevForm,
+          diets: diets,
+        }));
+      } catch (error) {
+        console.error("Error fetching diets: ", error);
+      }
+    }
     getDiets();
     getUnits();
   }, []);
 
-  const getDiets = async () => {
-    const token = localStorage.getItem("jwtToken");
-    try {
-      const response = await fetch("api/diets", {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch diets");
-      }
-      const diets: Diet[] = await response.json();
-      console.log("getDiets: ", diets)
-      setCreateForm((prevForm) => ({
-        ...prevForm,
-        diets: diets,
-      }));
-    } catch (error) {
-      console.error("Error fetching diets: ", error);
-    }
-  };
+
 
   const getUnits = async () => {
     const token = localStorage.getItem("jwtToken");
@@ -63,7 +65,6 @@ function CreateRecipe() {
       }
 
       const units: Unit[] = await response.json();
-      console.log("uuunits", units)
       setCreateForm((prevForm) => ({
         ...prevForm,
         units: units,
@@ -143,7 +144,7 @@ function CreateRecipe() {
   };
 
   const handleAddDiet = (dietName: string, id:string) => {
-
+    console.log(dietName)
     setCreateForm((prevForm) => ({
       ...prevForm,
       diets: [...prevForm.diets, { publicId:id, name: dietName, isChecked: false }],
@@ -206,9 +207,9 @@ function CreateRecipe() {
               onChange={handleChange}
               required
           />
-          <p>Diets(add new diet below)</p>
-          <ul style={{listStyle: "none"}}>
-            {createForm.diets.map((diet: Diet, index) => (
+          <p>Diets (add new diet below)</p>
+          <ul>
+            {createForm.diets && createForm.diets.map((diet, index) => (
                 <Checkbox
                     key={diet.publicId}
                     index={index}
@@ -221,14 +222,14 @@ function CreateRecipe() {
           <div>
             <label htmlFor="ingredients" className="ingredients-label">Ingredients</label>
             <textarea
-              name="ingredients"
-              value={transformIngredient(createForm.ingredients)}
-              onChange={handleChange}
-              disabled={true}
-              required
+                name="ingredients"
+                value={transformIngredient(createForm.ingredients)}
+                onChange={handleChange}
+                disabled={true}
+                required
             />
           </div>
-          <AddIngredient addIngredient={handleAddIngredient}/>
+          <AddIngredient addIngredient={handleAddIngredient} unitsVisible={createForm.units} />
           <label htmlFor="steps" className="step-label">Steps</label>
           <textarea
               name="steps"
@@ -256,10 +257,14 @@ function CreateRecipe() {
           />
           <button type="submit">Send New Recipe</button>
         </form>
-        <p>Add new diet</p>
-        <AddDiet addDiet={handleAddDiet}/>
-        <p>Add new unit</p>
-        <AddUnit addUnit={handleAddUnit}/>
+        <div className="add-section">
+          <p className="add-section">Add new diet</p>
+          <AddDiet addDiet={handleAddDiet}/>
+        </div>
+        <div className="add-section">
+          <p className="add-section">Add new unit</p>
+          <AddUnit addUnit={handleAddUnit}/>
+        </div>
       </>
   );
 }
