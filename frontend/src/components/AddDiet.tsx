@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface AddDietProps {
-    addDiet: (id: string,dietName: string) => void;
+    addDiet: (dietName: string, id: string) => void;
 }
 
 const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
@@ -27,7 +27,7 @@ const AddDiet: React.FC<AddDietProps> = ({ addDiet }) => {
             if (!response.ok) {
                 throw new Error("Failed to add diet");
             }
-            addDiet("", newDiet);
+            addDiet(newDiet,"");
             setNewDiet("");
         } catch (error) {
             console.error("Error adding diet: ", error);
