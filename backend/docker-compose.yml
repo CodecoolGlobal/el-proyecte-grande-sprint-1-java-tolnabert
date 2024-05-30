@@ -22,3 +22,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
+  node:
+    image: 'chilibeans-express:latest'
+    build:
+      context: ../express/
+    container_name: express_chilibeans
+    depends_on:
+     - app
+    ports:
+      - '5000:5000'
