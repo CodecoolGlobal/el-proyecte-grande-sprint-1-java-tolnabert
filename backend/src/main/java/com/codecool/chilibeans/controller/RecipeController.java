@@ -33,6 +33,7 @@ public class RecipeController {
 
     @PostMapping("/user")
     public RecipeDTO create(@RequestBody NewRecipeDTO newRecipeDTO) {
+        System.out.println(newRecipeDTO);
         return recipeService.save(newRecipeDTO);
     }
 

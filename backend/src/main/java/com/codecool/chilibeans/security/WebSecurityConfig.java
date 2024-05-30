@@ -64,8 +64,8 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-
-                        //Client endpoints
+                        //don t indicate admin, just close the paths for users, URL should not tell whether it is admin or user
+                        //Client endpoints change around logic
                         .requestMatchers("/api/clients/auth/**").permitAll()
                         .requestMatchers("/api/clients/user/**").hasRole("USER")
                         .requestMatchers("/api/clients/admin").hasRole("ADMIN")

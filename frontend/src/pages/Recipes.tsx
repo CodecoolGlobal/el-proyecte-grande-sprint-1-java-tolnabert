@@ -82,7 +82,7 @@ function Recipes() {
             </div>
             <div className="recipe-container">
                 {recipes &&
-                    recipes.map((recipe) => (
+                    recipes.map((recipe) => ( recipe &&
                         <NavLink to={`/single-recipe/${recipe.publicId}`}>
                             <RecipeCard key={recipe.publicId} recipe={recipe}/>
                         </NavLink>

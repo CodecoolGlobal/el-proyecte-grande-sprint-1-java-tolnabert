@@ -6,7 +6,7 @@ interface Props {
 }
 
 function SingleRecipeDetails({recipe}: Props) {
-    return (
+    return ( recipe &&
         <div className="recipe-details">
             <h1>{recipe.name}</h1>
             <img src={recipe.image} alt={recipe.name} className="recipe-image"/>

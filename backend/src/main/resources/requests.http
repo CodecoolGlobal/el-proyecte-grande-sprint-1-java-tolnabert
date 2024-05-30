@@ -1,0 +1,51 @@
+###
+POST http://localhost:8080/api/diets
+Content-Type: application/json
+
+{
+  "name": "vegan"
+}
+
+###
+POST http://localhost:8080/api/units
+Content-Type: application/json
+
+{
+  "unitName": "gram"
+}
+
+###
+POST http://localhost:8080/api/clients
+Content-Type: application/json
+
+{
+  "clientName": "Peti",
+  "password": "123",
+  "firstName": "Peter",
+  "lastName": "Tumpek",
+  "dateOfBirth": "1999-01-01",
+  "email": "peti@gmail.com"
+}
+
+###
+POST http://localhost:8080/api/recipes
+Content-Type: application/json
+
+{
+  "name": "Mákos guba 3.0",
+  "description": "Isteni",
+  "diets": [{
+    "publicId": "9de329ac-4696-424f-85af-6ae6e39a1474",
+    "name": "vegan"
+  }],
+  "ingredients": [],
+  "steps": [],
+  "portions": 2,
+  "image": "",
+  "createdBy": "c96c45d5-9706-432a-870b-1bcf905733cd"
+}
+
+###
+GET http://localhost:8080/api/recipes
+
+
