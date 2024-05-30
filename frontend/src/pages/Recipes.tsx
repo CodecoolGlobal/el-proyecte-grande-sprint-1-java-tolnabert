@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import RadioButton from "../components/RadioButton";
 import RecipeCard from "../components/RecipeCard";
-import useFetch from "../hooks";
+import useSimpleFetch from "../useSimpleFetch";
 import {Recipe} from "../utils/types";
 import "./Recipes.css"
 import "./SortingOptions.css"
@@ -25,7 +25,7 @@ function Recipes() {
         data: recipes,
         error,
         isLoading,
-    } = useFetch<Recipe[]>(`/api/recipes?sortBy=${selected.sortBy}&sortOrder=${selected.sortOrder}`, localStorage.getItem("jwtToken"));
+    } = useSimpleFetch<Recipe[]>(`/api/recipes?sortBy=${selected.sortBy}&sortOrder=${selected.sortOrder}`, localStorage.getItem("jwtToken"));
 
     if (isLoading) {
         return <div>Loading...</div>;
