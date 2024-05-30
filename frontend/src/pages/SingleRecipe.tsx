@@ -13,7 +13,7 @@ function SingleRecipe() {
         data: recipe,
         error,
         isLoading,
-    } = useFetch<Recipe>(`/api/recipes/${id}`, localStorage.getItem("jwtToken"));
+    } = useFetch<Recipe | null>(`/api/recipes/${id}`, localStorage.getItem("jwtToken"));
 
 
     if (isLoading) {

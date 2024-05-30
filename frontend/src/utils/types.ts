@@ -20,7 +20,7 @@ export type Recipe = {
   image: string;
   createdBy: User;
   createdAt: Date;
-};
+} | null;
 
 
 export type Diet = {
