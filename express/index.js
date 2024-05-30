@@ -10,7 +10,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 const app = express(); 
 
 app.use('/api', createProxyMiddleware({
-  target: 'http://app_chilibeans:8080',
+  target: 'http://app-chilibeans:8080',
   changeOrigin: true
 }))
 
