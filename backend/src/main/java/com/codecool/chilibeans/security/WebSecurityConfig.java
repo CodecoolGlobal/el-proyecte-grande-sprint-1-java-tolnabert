@@ -68,23 +68,23 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //don t indicate admin, just close the paths for users, URL should not tell whether it is admin or user
                         //Client endpoints change around logic
-                        .requestMatchers("/clients/auth/**").permitAll()
-                        .requestMatchers("/clients/user/**").hasRole("USER")
-                        .requestMatchers("/clients/admin").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/clients/{id}").permitAll()
+                        .requestMatchers("/api/clients/auth/**").permitAll()
+                        .requestMatchers("/api/clients/user/**").hasRole("USER")
+                        .requestMatchers("/api/clients/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/clients/{id}").permitAll()
 
                         //Recipe endpoints
-                        .requestMatchers(HttpMethod.GET, "/recipes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/recipes/**").permitAll()
                         .requestMatchers("api/recipes/user/**").hasRole("USER")
 
                         //Diets endpoints
-                        .requestMatchers("/diets/user/**").hasRole("USER")
-                        .requestMatchers("/diets/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/diets/**").permitAll()
+                        .requestMatchers("/api/diets/user/**").hasRole("USER")
+                        .requestMatchers("/api/diets/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/diets/**").permitAll()
 
                         //Unit endpoints
-                        .requestMatchers(HttpMethod.GET, "/units/**").permitAll()
-                        .requestMatchers("/units/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/units/**").permitAll()
+                        .requestMatchers("/api/units/admin/**").hasRole("ADMIN")
 
                         //Error
                         .requestMatchers("/error").permitAll()

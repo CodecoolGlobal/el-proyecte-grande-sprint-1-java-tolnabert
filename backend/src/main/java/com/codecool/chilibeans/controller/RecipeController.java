@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("/api/recipes")
 public class RecipeController {
 
     private final RecipeService recipeService;

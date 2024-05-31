@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/units")
+@RequestMapping("/api/units")
 public class UnitController {
 
     private final UnitService unitService;
