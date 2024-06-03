@@ -26,12 +26,14 @@ public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtUtils jwtUtils;
+    private final LoggingFilter loggingFilter;
 
     @Autowired
-    public WebSecurityConfig(UserDetailsService userDetailsService, AuthEntryPointJwt unauthorizedHandler, JwtUtils jwtUtils) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, AuthEntryPointJwt unauthorizedHandler, JwtUtils jwtUtils, LoggingFilter loggingFilter) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtUtils = jwtUtils;
+        this.loggingFilter = loggingFilter;
     }
 
     @Bean
@@ -93,7 +95,7 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
