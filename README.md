@@ -31,13 +31,9 @@
 
 ## Contributors and roles
 - [Blanka Pasztor](https://github.com/blankapsz)
-  <h3>Description coming soon...</h3>
 - [Norbert Tolnai](https://github.com/tolnabert)
-  <h3>Description coming soon...</h3>
 - [Peter Tumpek](https://github.com/tumpeti)
-  <h3>Description coming soon...</h3>
 - [Levente Hrabetz](https://github.com/grindlevi)
-  <h3>In this project, I took part of planning the database structure and defining the entities, ensuring an efficient and scalable data model. I also contributed to developing the backend services, integrating them seamlessly with the frontend. On the frontend, I primarily focused on implementing the "Add New Recipe" page using TypeScript. Additionally, I collaborated with my teammates to dockerize the entire application, facilitating smooth deployment and scalability.</h3>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
