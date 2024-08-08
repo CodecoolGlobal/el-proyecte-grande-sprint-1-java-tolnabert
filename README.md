@@ -88,7 +88,12 @@ Configure the application.properties file with your PostgreSQL database credenti
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-Coming soon :)
+Once everything is set up, you can start using the Recipe Sharing Platform. Here’s a brief guide on what you can do:
+
+- Register and Log in: Create an account or log in with existing credentials.
+- Browse Recipes: Explore a wide variety of recipes shared by the community.
+- Add Your Recipe: Submit your own recipes to share with others.
+- Sort Recipes: Use the sort functionality to order recipes by different criterias.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
